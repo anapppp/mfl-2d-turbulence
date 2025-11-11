@@ -1,0 +1,21 @@
+ Simulacao: simjextr
+ Grade: grdJextr
+ Periodo de simulacao (s):   12.000000    
+ Intervalo de tempo:   dt =  9.99999975E-05
+
+ Delimitacao do dominio (m):
+ x inicial:   0.0000000       x final:   4.9497476    
+ z inicial:   0.0000000       z final:  0.16122034    
+
+ Velocidade vertical na superficie: calculada
+ Velocidade vertical no topo: calculada
+ Pontos para calculo das flutuacoes e da serie full
+  1.131371  0.066468
+  2.404163  0.066468
+  3.676955  0.066468
+  1.131371  0.080610
+  2.404163  0.080610
+  3.676955  0.080610
+  1.131371  0.087681
+  2.404163  0.087681
+  3.676955  0.087681

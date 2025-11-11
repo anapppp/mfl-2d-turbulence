@@ -1,0 +1,21 @@
+ Simulacao: testdomi
+ Grade: testdomi
+ Periodo de simulacao (s):   12.000000    
+ Intervalo de tempo:   dt =  9.99999975E-05
+
+ Delimitacao do dominio (m):
+ x inicial:   0.0000000       x final:   5.0000000    
+ z inicial:   0.0000000       z final:  0.20800000    
+
+ Velocidade vertical na superficie: calculada
+ Velocidade vertical no topo: calculada
+ Pontos para calculo das flutuacoes e da serie full
+  1.000000  0.084000
+  2.400000  0.084000
+  3.600000  0.084000
+  1.000000  0.104000
+  2.400000  0.104000
+  3.600000  0.104000
+  1.000000  0.114000
+  2.400000  0.114000
+  3.600000  0.114000
