@@ -67,7 +67,7 @@ character*8 :: nomegrad
 !
 !
 ! Nome da Grade
-nomegrad = "testdom"
+nomegrad = "grade001"
 !
 !
 open(unit=7, file="./"//nomegrad//".grd", status="unknown")
