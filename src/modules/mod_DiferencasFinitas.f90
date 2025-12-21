@@ -77,7 +77,6 @@ integer :: i, j, in, jn, cont, ierrmax, jerrmax
  errolim = 1.0E-4
  omega = 1.8
 
-! open(unit=18, file = "erro.txt", status="unknown") 
   
  fold  =  f
  cont = 0
@@ -169,9 +168,7 @@ do
   
 enddo !iteracoes
 
-
-! close(18)
- return
+return
 end subroutine EDP2GaussSeidel
 
 
@@ -195,7 +192,6 @@ integer :: i, j, in, jn, cont, ierrmax, jerrmax
  errolim = 1.0E-6
  omega = 1.8
 
-! open(unit=18, file = "erro.txt", status="unknown") 
   
  fold  =  f
  cont = 0
@@ -320,8 +316,6 @@ do
 
 enddo !iteracoes
 
-
-! close(18)
  return
 end subroutine EDP2GaussSeidel_Xadrez
 
@@ -435,7 +429,6 @@ enddo
 
 f(:,1) = f(:,2)
 
-! close(18)
 return
 end subroutine EDP2GaussSeidel_xUnif_CondContCiclica
 
@@ -458,8 +451,6 @@ integer :: i, j, in, jn, cont, ierrmax, jerrmax
 
  errolim = 1.0E-2
  omega = 1.7
-
-! open(unit=18, file = "erro.txt", status="unknown") 
   
  fold  =  f
  cont = 0
@@ -534,9 +525,6 @@ do
  
   f(1,:) = f(in,:) 
 
-  !erromax = erromax/maxval(abs(fold))
-!  write(18,*) cont, erromax
-
   if (erromax <= errolim) exit  
   
   if (cont >= 10000) then
@@ -549,7 +537,6 @@ do
 enddo
 
 
-! close(18)
  return
 end subroutine EDP2GaussSeidel_CondContCiclica
 

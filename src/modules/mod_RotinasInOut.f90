@@ -5,10 +5,7 @@ module RotinasInOut
 implicit none 
  contains
 
-!-------------------------
-
-
-subroutine printResultCampo2D(var, vetx, vetz, nomeSimulacao, nomeVariavel, passoTempo)
+subroutine printResultCampo2D(var, vetx, vetz, nomecaso, variavel, dt)
 ! Imprime os resultados em formato padrao. 
 ! #1 linha: vetor x
 ! #2 linha: vetor z
@@ -28,8 +25,8 @@ subroutine printResultCampo2D(var, vetx, vetz, nomeSimulacao, nomeVariavel, pass
 !
 !
 ! A variavel nomeCampo identifica a variavel. O nome do arquivo de saida tem o seguinte padrao:
-! nomeSimulacao.nomeVariavel.passoTempo
-! onde "nomeVariavel" pode ter apenas 1 caractere e "passoTempo" deve ter 8 caracteres
+! nomecaso.variavel.dt
+! onde "variavel" pode ter apenas 1 caractere e "dt" deve ter 8 caracteres
 ! Exemplo: simteste.T.50
 !
 ! O diretorio padrao para impressao dos resultados é ./Resultados
@@ -37,13 +34,13 @@ subroutine printResultCampo2D(var, vetx, vetz, nomeSimulacao, nomeVariavel, pass
 
 
 real :: var(:,:), vetx(:), vetz(:)
-character*8 :: nomeSimulacao, passoTempo
-character :: nomeVariavel
+character*8 :: nomecaso, dt
+character :: variavel
 integer :: i, k
 
-passoTempo = adjustl(passoTempo)
+dt = adjustl(dt)
 
-open(unit=18, file = "./Resultados/"//nomeSimulacao//"."//nomeVariavel//"."//passoTempo, status="unknown") 
+open(unit=18, file = "./Resultados/"//nomecaso//"."//variavel//"."//dt, status="unknown") 
 
 write(18,*) vetx
 write(18,*) vetz
@@ -129,25 +126,25 @@ end subroutine ReadCampo2D
 !-------------------------
 
 
-subroutine printResultPerfilMedio(var, vetz, nomeSimulacao, nomeVariavel)
+subroutine printResultPerfilMedio(var, vetz, nomecaso, variavel)
 ! Imprime os resultados em formato padrao. 
 ! #1 coluna: vetor z
 ! #2 coluna: vetor var
 !
 ! A variavel nomeCampo identifica a variavel. O nome do arquivo de saida tem o seguinte padrao:
-! nomeSimulacao.nomeVariavel.med
-! onde "nomeVariavel" pode ter apenas 1 caractere
+! nomecaso.variavel.med
+! onde "variavel" pode ter apenas 1 caractere
 ! Exemplo: simteste.T.med
 !
 ! O diretorio padrao para impressao dos resultados é ./Resultados
 
 
 real :: var(:), vetz(:)
-character*8 :: nomeSimulacao
-character :: nomeVariavel
+character*8 :: nomecaso
+character :: variavel
 integer :: k
 
-open(unit=18, file = "./Resultados/"//nomeSimulacao//"."//nomeVariavel//".med", status="unknown") 
+open(unit=18, file = "./Resultados/"//nomecaso//"."//variavel//".med", status="unknown") 
 
 do k=1,size(vetz)
   write(18,*) vetz(k),var(k)
@@ -157,6 +154,4 @@ close(18)
 end subroutine printResultPerfilMedio
 
 
-
-!-------------------------
 end module RotinasInOut

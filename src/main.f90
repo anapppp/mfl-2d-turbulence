@@ -1,8 +1,7 @@
-include 'mod_PontoDePartida.f90'
-include 'mod_RotinasInOut.f90'
-include 'mod_DiferencasFinitas.f90'
-program CamadaLimite2D
-!-------------------------------------------------------------------------!
+include './modules/mod_PontoDePartida.f90'
+include './modules/mod_RotinasInOut.f90'
+include './modules/mod_DiferencasFinitas.f90'
+program mfl2dTurbulence
 
 
 !-------------------------------------------------------------------------!
@@ -14,10 +13,10 @@ program CamadaLimite2D
 ! Modelo de Camada Limite Atmosferica 2D.
 ! Solução com uso do Método da Filtragem Lagrangeana.
 !
-! NA LINHA DE COMANDO: 
+! Compilação e execução: 
 ! Va para o diretorio principal e digite:
-! >> gfortran CodigoFonte/CamadaLimite2D_v2.0.f90 -o ./CamadaLimite2D_v2.0
-! >> ./CamadaLimite2D_v2.0
+! >> gfortran main.f90 -o ./mfl2dTurbulence
+! >> ./mfl2dTurbulence
 !
 !-------------------------------------------------------------------------!
 
@@ -110,16 +109,16 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
  read(*,*) nomecaso
 
  open(unit=8,  file = "./"//nomecaso//".cfg", delim="apostrophe")
- open(unit=9,  file = "./Log/"//nomecaso//".inf", status="unknown")
- open(unit=11, file = "./Log/"//nomecaso//".log", status="unknown")
- open(unit=13, file = "./Resultados/"//nomecaso//".ecin", status="unknown")
- open(unit=25, file = "./Resultados/"//nomecaso//".vort", status="unknown")
+ open(unit=9,  file = "./log/"//nomecaso//".inf", status="unknown")
+ open(unit=11, file = "./log/"//nomecaso//".log", status="unknown")
+ open(unit=13, file = "./results/"//nomecaso//".ecin", status="unknown")
+ open(unit=25, file = "./results/"//nomecaso//".vort", status="unknown")
 
- open(unit=27, file = "./Resultados/"//nomecaso//".u.full", status="unknown")
- open(unit=29, file = "./Resultados/"//nomecaso//".w.full", status="unknown")
- open(unit=31, file = "./Resultados/"//nomecaso//".p.full", status="unknown")
- open(unit=33, file = "./Resultados/"//nomecaso//".t.full", status="unknown")
- open(unit=35, file = "./Resultados/"//nomecaso//".q.full", status="unknown")  
+ open(unit=27, file = "./results/"//nomecaso//".u.full", status="unknown")
+ open(unit=29, file = "./results/"//nomecaso//".w.full", status="unknown")
+ open(unit=31, file = "./results/"//nomecaso//".p.full", status="unknown")
+ open(unit=33, file = "./results/"//nomecaso//".t.full", status="unknown")
+ open(unit=35, file = "./results/"//nomecaso//".q.full", status="unknown")  
 
 ! Lendo dados do arquivo nomecaso.cfg
  read(8, NML = dominio)
@@ -294,23 +293,23 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
  endif
 
  if (MediaFlutFlag == 1) then
-   call system("cp ./Resultados/"//nomecaso//".u.med ./mediaarq") 
+   call system("cp ./results/"//nomecaso//".u.med ./mediaarq") 
    call ReadCampo2D('mediaarq', umed, in, kn)
-   call system("cp ./Resultados/"//nomecaso//".w.med ./mediaarq")
+   call system("cp ./results/"//nomecaso//".w.med ./mediaarq")
    call ReadCampo2D('mediaarq', wmed, in, kn)
-   call system("cp ./Resultados/"//nomecaso//".p.med ./mediaarq")
+   call system("cp ./results/"//nomecaso//".p.med ./mediaarq")
    call ReadCampo2D('mediaarq', pmed, in, kn)
-   call system("cp ./Resultados/"//nomecaso//".t.med ./mediaarq")
+   call system("cp ./results/"//nomecaso//".t.med ./mediaarq")
    call ReadCampo2D('mediaarq', Tmed, in, kn)
-   call system("cp ./Resultados/"//nomecaso//".q.med ./mediaarq")
+   call system("cp ./results/"//nomecaso//".q.med ./mediaarq")
    call ReadCampo2D('mediaarq', thetamed, in, kn)
    call system("rm mediaarq")
 
-   open(unit=15, file = "./Resultados/"//nomecaso//".u.flu", status="unknown")
-   open(unit=17, file = "./Resultados/"//nomecaso//".w.flu", status="unknown")
-   open(unit=19, file = "./Resultados/"//nomecaso//".p.flu", status="unknown")
-   open(unit=21, file = "./Resultados/"//nomecaso//".t.flu", status="unknown")
-   open(unit=23, file = "./Resultados/"//nomecaso//".q.flu", status="unknown")  
+   open(unit=15, file = "./results/"//nomecaso//".u.flu", status="unknown")
+   open(unit=17, file = "./results/"//nomecaso//".w.flu", status="unknown")
+   open(unit=19, file = "./results/"//nomecaso//".p.flu", status="unknown")
+   open(unit=21, file = "./results/"//nomecaso//".t.flu", status="unknown")
+   open(unit=23, file = "./results/"//nomecaso//".q.flu", status="unknown")  
 
  endif
 
@@ -598,4 +597,4 @@ close(31)
 close(33)
 close(35)
 
-end program CamadaLimite2D
+end program mfl2dTurbulence

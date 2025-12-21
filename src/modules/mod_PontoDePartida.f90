@@ -10,7 +10,7 @@ implicit none
  function CalculaPontoDePartida3NTRobert(ii, jj, vetx, vety, vdx, vdy, velu, velv, dt, xnFlag)
 !  Calcula o ponto de partida pelo método de 3 niveis de tempo de Robert (1 passso). Fonte: 
 !     Robert, A. A stable numerical integration scheme for the primitive meteorological 
-!       equations Atmosphere-Ocean, Taylor & Francis, 1981, 19, 35-46
+!     equations Atmosphere-Ocean, Taylor & Francis, 1981, 19, 35-46
 
 real :: a, b, xn, yn, CalculaPontoDePartida3NTRobert(2), dt, n
 real :: vetx(:), vety(:), vdx(:), vdy(:), velu(:,:), velv(:,:)
