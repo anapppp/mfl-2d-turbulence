@@ -1,19 +1,4 @@
 program mfl2dTurbulence
-!-------------------------------------------------------------------------!
-! Ana Paula Kelm Soares
-! 13/jun/2012
-! LEMMA/UFPR
-! PPGMNE - Programa de Pos-Graduacao em Metodos Numericos em Engenharia
-!-------------------------------------------------------------------------!
-! Modelo de Camada Limite Atmosferica 2D.
-! Solução com uso do Método da Filtragem Lagrangeana.
-!
-! Compilação e execução: 
-! Va para o diretorio principal e digite:
-! >> gfortran main.f90 -o ./mfl2dTurbulence
-! >> ./mfl2dTurbulence
-!
-!-------------------------------------------------------------------------!
 
 
 use PontoDePartida
@@ -33,59 +18,6 @@ implicit none
  integer :: i, k, n, in, kn, npt, nptprint, nptMediaFlut, MediaFlutFlag, contpt
  integer :: uCiFlag, wCiFlag, pCiFlag, TCiFlag, PontosCalcFlutX(3), PontosCalcFlutZ(3), ii, jj
  character*8  :: nomecaso, nomegrade, passotempo, uCiFile, wCiFile, pCiFile, TCiFile
-
-
-!-------------------------------------------------------------------------!
-! Descricao das variaveis
-!
-! Os indices 0, 1 e 2 das seguintes variáveis referem-se aos instantes 
-! t-dt , t e t+dt, respectivamente
-!      u: componente x da velocidade
-!      w: componente z da velocidade
-!      p: pressao - desvio do estado basico 
-!      theta : temperatura potencial 
-!      T: temperatura - desvio do estado basico
-!      lap_p: laplaciano de p
-!      lap_u: laplaciano de u
-!      lap_w: laplaciano de w
-!      grad_p0_x: gradiente de p0 em relação a x (idem para instantes 1 e 2)
-!      grad_p0_z: gradiente de p0 em relacao a z (idem para instantes 1 e 2)
-! x, z: coordenada espacial
-! dx, dz: espacamento de grade
-! umed, wmed, pmed, Tmed, thetamed: perfil vertical medio de cada variavel, nos 
-!                                   ultimos "nptMediaFlut" passos de tempo
-! dt: passo de tempo
-! ptoPartida0: = (xn, zn), posicao de partida da particula, no instante t-dt
-! ptoPartida1: = (xn, zn), posicao de partida da particula, no instante t
-! gamma: lapse rate 
-! EnCineticaMedia: energia cinética media no instante t+dt
-! rho_ref: densidade no estado basico de referencia (Kg/m3)
-! temp_ref: temperatura no estado básico de referência (K)
-! press_ref_sup: pressao no estado basico de referencia na superficie (Pa)
-! mi: Viscosidade dinâmica (Pa.s)
-! alphah: condutividade térmica (W/m.K)
-! R: constante do gas ideal (J/kg K) 
-! cp: capacidade de calor específico a pressão constante (J/kg°C)
-! g: aceleração da gravidade (m/s2) 
-! uCiUnif, wCiUnif, pCiUnif, TCiUnif: condicao inicial uniforme
-! uCiFlag, wCiFlag, pCiFlag, TCiFlag: uCiFlag = 0, condição inicial uniforme;
-!                                         uCiFlag = 1, ler condicao inicial no arquivo
-! uCiFile, wCiFile, pCiFile, TCiFile: nome do arquivo para condicao inicial
-! uCcTop, wCcTop, TCcTop: condicao de contorno de u, w, e T no topo
-! uCcSup, wCcSup, TCcSup: condicao de contorno de u, w e T na superficie
-! i: indice dos pontos de grade em x
-! k: indice dos pontos de grade em z
-! n: indice do tempo
-! in: 1 <= i <= in
-! kn: 1 <= k <= kn
-! npt: 1 <= n <= npt
-! nptprint: a cada "nptprint" passos de tempo os resultados sao impressos
-! nptMediaFlut: Nos ultimos "nptMediaFlut" passos de tempo as medias ou flutuacoes sao calculadas
-! MediaFlutFlag: MediaFlutFlag=0 => calcula a media; MediaFlutFlag=1 => calcula flutuacoes (o arquivo nomecaso.med deve estar na pasta Resultados)
-! PontosCalcFlutX, PontosCalcFlutZ: coordenadas dos pontos para o calculo das flutuacoes
-! nomecaso: nome da simulacao
-! nomegrade: nome do arquivo de grade
-!-------------------------------------------------------------------------!
 
 
 namelist / dominio / nomegrade
@@ -144,21 +76,8 @@ end if
 
  ! Lendo o arquivo de grade
  call ReadGrade(nomegrade, in, kn, x, z, dx, dz)
-
  
-!----------------Arquivo nomecaso.inf-------------!
- write(9,*) 'Simulacao: ', nomecaso
- write(9,*) 'Grade: ', nomegrade
- write(9,*) 'Periodo de simulacao (s):', npt*dt
- write(9,*) 'Intervalo de tempo:   dt =', dt
- write(9,*)
- write(9,*) 'Delimitacao do dominio (m):'
- write(9,*) 'x inicial:', x(1), '  x final:', x(in)
- write(9,*) 'z inicial:', z(1), '  z final:', z(kn)
- write(9,*) 
-!--------------------------------------------------!
-
-
+ 
 ! Define Condicao Inicial
  if (uCiFlag == 0) then 
    if (uCiUnif <= -9999.9) then !Escoamento de Couette
@@ -178,7 +97,18 @@ end if
  if (pCiFlag == 1) call ReadCampo2D(pCiFile, p0, in, kn)
  if (TCiFlag == 0) T2 = TCiUnif
  if (TCiFlag == 1) call ReadCampo2D(TCiFile, T2, in, kn)
+ 
 
+! Arquivo nomecaso.inf
+ write(9,*) 'Simulacao: ', nomecaso
+ write(9,*) 'Grade: ', nomegrade
+ write(9,*) 'Periodo de simulacao (s):', npt*dt
+ write(9,*) 'Intervalo de tempo:   dt =', dt
+ write(9,*)
+ write(9,*) 'Delimitacao do dominio (m):'
+ write(9,*) 'x inicial:', x(1), '  x final:', x(in)
+ write(9,*) 'z inicial:', z(1), '  z final:', z(kn)
+ write(9,*) 
 
 ! Define Condicao de Contorno
  u0(:,1) = uCcSup
@@ -200,6 +130,9 @@ end if
    write(9,*) 'Velocidade vertical no topo: prescrita'
  endif
 
+ close(9)
+
+ 
  T2(:,1) = TCcSup
  T2(:,kn) = TCcTop
 
@@ -295,7 +228,6 @@ call printResultCampo2D(p0, x, z, nomecaso, 'p',passotempo)
 call printResultCampo2D(theta0, x, z, nomecaso, 'q',passotempo)
 call printResultCampo2D(T2, x, z, nomecaso, 't',passotempo)
 
-close(9)
 
 
 !-------------------------------------------------------------------------!
@@ -354,7 +286,8 @@ do n = 1, npt
 !     Calculando as componentes u e w da velocidade
       u2(i,k) = -dt/rho_ref*grad_p2_x(i,k) + ValorNoPontoDePartida(D0, x, z, dx, dz, ptoPartida0, i, k)
       w2(i,k) = -dt/rho_ref*grad_p2_z(i,k) + ValorNoPontoDePartida(E1, x, z, dx, dz, ptoPartida1, i, k) + &
-                ValorNoPontoDePartida(F0, x, z, dx, dz, ptoPartida0, i, k)     
+                ValorNoPontoDePartida(F0, x, z, dx, dz, ptoPartida0, i, k)   
+                
      enddo !k
   enddo !i
 
