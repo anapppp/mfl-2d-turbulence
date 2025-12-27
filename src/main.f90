@@ -1,9 +1,4 @@
-include './modules/mod_PontoDePartida.f90'
-include './modules/mod_RotinasInOut.f90'
-include './modules/mod_DiferencasFinitas.f90'
 program mfl2dTurbulence
-
-
 !-------------------------------------------------------------------------!
 ! Ana Paula Kelm Soares
 ! 13/jun/2012
@@ -101,12 +96,13 @@ namelist / condicaoinicial / uCiFlag, uCiUnif, uCiFile, wCiFlag, wCiUnif, wCiFil
                              pCiFlag, pCiUnif, pCiFile, TCiFlag, TCiUnif, TCiFile
 namelist / condicaocontorno / uCcTop, uCcSup, wCcTop, wCcSup, TCcTop, TCcSup
 
+call get_command_argument(1, nomecaso)
 
-!Para imprimir arquivos a cada loop 
-call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL") 
+if (len_trim(nomecaso) == 0) then
+  write(*,*) "Informe o nome da simulacao"
+  stop
+end if
 
- write(*,*) "Escreva o nome da simulacao"
- read(*,*) nomecaso
 
  open(unit=8,  file = "./"//nomecaso//".cfg", delim="apostrophe")
  open(unit=9,  file = "./log/"//nomecaso//".inf", status="unknown")
@@ -207,21 +203,8 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
  T2(:,1) = TCcSup
  T2(:,kn) = TCcTop
 
-
-! Gerador de turbulencia
-!do k=1,kn-2,2
-! u0(1,k) = 0.0
-!enddo
-
-! Rugosidade
-!do i=1,in,3
-! u0(i,2) = 0.0
-!enddo
- 
 ! Inicializa variáveis
-
  gamma = g/cp  !lapse rate
-
 
  do i=1,in
   do k=1,kn
@@ -231,18 +214,12 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
 
  grad_p0_x = Grad1D(p0,dx,1, in, kn)
  grad_p0_z = Grad1D(p0,dz,2, in, kn)
-! grad_p0_z(:,1) = 0.0
  lap_u0 = Lap2D(u0, dx, dz, in, kn)
-! lap_u0(:,1) = grad_p0_x(:,1)/mi
  lap_w0 = Lap2D(w0, dx, dz, in, kn)
-! lap_w2(:,1) = 0.0
  lap_p0 = Lap2D(p0, dx, dz, in, kn) 
-
 
  A0 = 2.0*dt*alphah*Lap2D(theta0, dx, dz, in, kn)+ theta0
  B1 = 2.0*rho_ref*g/temp_ref*Grad1D(T2,dz,2, in, kn)
-! B1(:,1) = B1(:,2)
-! B1(:,kn) = B1(:,kn-1)
  C0 = 2.0*mi*( Grad1D(lap_u0,dx,1, in, kn) + Grad1D(lap_w0,dz,2, in, kn) ) - lap_p0
  D0 = dt/rho_ref*(-grad_p0_x + 2.0*mi*lap_u0) + u0 
  E1 = 2.0*dt*g*T2/temp_ref
@@ -269,7 +246,6 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
  grad_p1_x = grad_p0_x
  grad_p1_z = grad_p0_z
 
-
 ! Ponto para o calculo das flutuacoes
  PontosCalcFlutX(1) = int(1.0/4.0*real(in))
  PontosCalcFlutX(2) = int(1.0/2.0*real(in))
@@ -280,8 +256,6 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
 
  write(9,*) 'Pontos para calculo das flutuacoes e da serie full'
  write(9,'(f10.6,f10.6)') ((x(PontosCalcFlutX(ii)), z(PontosCalcFlutZ(jj)), ii=1,3), jj=1,3)
-
-
 
 
  if (MediaFlutFlag == 0) then
@@ -310,7 +284,6 @@ call system("GFORTRAN_UNBUFFERED_ALL='y' export GFORTRAN_UNBUFFERED_ALL")
    open(unit=19, file = "./results/"//nomecaso//".p.flu", status="unknown")
    open(unit=21, file = "./results/"//nomecaso//".t.flu", status="unknown")
    open(unit=23, file = "./results/"//nomecaso//".q.flu", status="unknown")  
-
  endif
 
 
@@ -321,9 +294,6 @@ call printResultCampo2D(w0, x, z, nomecaso, 'w',passotempo)
 call printResultCampo2D(p0, x, z, nomecaso, 'p',passotempo)
 call printResultCampo2D(theta0, x, z, nomecaso, 'q',passotempo)
 call printResultCampo2D(T2, x, z, nomecaso, 't',passotempo)
-
-
-
 
 close(9)
 
@@ -344,10 +314,6 @@ do n = 1, npt
 
  contpt = contpt + 1
 
-! TESTE DA VISCOSIDADE
-! if (n>=int(npt/2)) mi = 1.0E-10
-
-  
   do i = 2, in
    do k = 2, kn-1
 
@@ -366,16 +332,7 @@ do n = 1, npt
 
    enddo !k
   enddo !i
-
-  
-! Calculando o laplaciano da Pressão na superficie e no topo usando imposicao da pressao: lap_p = d2p/dx2
-!  do i=2,in-1
-!     Ax = 2.0/(dx(i)*dx(i-1)*(dx(i)+dx(i-1)))
-!     lap_p2(i,1)  = Ax*(p2(i-1,1)*dx(i)  - p2(i,1)*(dx(i)+dx(i-1))  + p2(i+1,1)*dx(i-1))
-!     lap_p2(i,kn) = Ax*(p2(i-1,kn)*dx(i) - p2(i,kn)*(dx(i)+dx(i-1)) + p2(i+1,kn)*dx(i-1))
-!  enddo
-
-  
+   
 ! Calculando o campo de Pressão 
 !  call EDP2GaussSeidel(p2, lap_p2, dx, dz, in, kn)
 !  call EDP2GaussSeidelGradeUniforme(p2,lap_p2, dx(1), dz(1), in, kn)
@@ -385,14 +342,10 @@ do n = 1, npt
 ! Calculando os gradientes de Pressão 
   grad_p2_x = Grad1D(p2,dx,1, in, kn)
   grad_p2_z = Grad1D(p2,dz,2, in, kn)
-!  grad_p2_z(:,1)  = 0.0 ! imposicao da pressao
-!  grad_p2_z(:,kn) = 0.0 ! imposicao da pressao
-
 
   do i = 2, in-1
    do k = 2, kn-1 
-  
-!     Calculando o Ponto de Partida 
+  !     Calculando o Ponto de Partida 
       ptoPartida0 = CalculaPontoDePartida2P3NT(i, k, x, z, dx, dz, u1, w1, dt, 0)  
       ptoPartida1 = CalculaPontoDePartida2P3NT(i, k, x, z, dx, dz, u1, w1, dt, 1)
 !      ptoPartida0 = CalculaPontoDePartida3NTRobert(i, k, x, z, dx, dz, u1, w1, dt, 0)
@@ -402,34 +355,21 @@ do n = 1, npt
       u2(i,k) = -dt/rho_ref*grad_p2_x(i,k) + ValorNoPontoDePartida(D0, x, z, dx, dz, ptoPartida0, i, k)
       w2(i,k) = -dt/rho_ref*grad_p2_z(i,k) + ValorNoPontoDePartida(E1, x, z, dx, dz, ptoPartida1, i, k) + &
                 ValorNoPontoDePartida(F0, x, z, dx, dz, ptoPartida0, i, k)     
- 
-    enddo !k
+     enddo !k
   enddo !i
 
-
-!Gerador de turbulencia
-!u2(5,1:3) = 0.0
-!w2(5,1:3) = 0.0
-
-! Rugosidade
-!do i=1,in,3
-! u2(i,2) = 0.0
-!enddo
 
 ! Calculando a velocidade vertical no topo
  if (wCcTop <= -9999.9) w2(:,kn) = 1.5*w1(:,kn-1) - 0.5*w1(:,kn-3)
  if (wCcSup <= -9999.9) w2(:,1)  = 1.5*w1(:,2)    - 0.5*w1(:,4)
 
  u2(in,:) = 1.5*u1(in-1,:) - 0.5*u1(in-3,:)
- 
- 
-
+  
 ! Calculando o Laplaciano da velocidade
   lap_u2 = Lap2D(u2, dx, dz, in, kn)
   lap_u2(:,1) = grad_p2_x(:,1)/mi
   lap_w2 = Lap2D(w2, dx, dz, in, kn)
   lap_w2(:,1) = 0.0   
-
 
 ! Calculando o desvio do estado de referencia da temperatura, a pressao total, a energia cinetica e a vorticidade medias
   EnCineticaMedia = 0.0
@@ -437,7 +377,6 @@ do n = 1, npt
   do i = 2, in-1
     do k = 2, kn-1   
       T2(i,k) = theta2(i,k) - temp_ref - gamma*z(k)
-!      pressao(i,k) = p2(i,k) + press_ref_sup - rho_ref*g*(z(k)-z(0)) 
       EnCineticaMedia = EnCineticaMedia + (u2(i,k)**2 + w2(i,k)**2)/2.0 
       dwdx = (w2(i+1,k)*dx(i-1)**2 + w2(i,k)*(dx(i)**2-dx(i-1)**2) - w2(i-1,k)*dx(i)**2)/(dx(i)*dx(i-1)*(dx(i)+dx(i-1)))
       dudz = (u2(i,k+1)*dz(k-1)**2 + u2(i,k)*(dz(k)**2-dz(k-1)**2) - u2(i,k-1)*dz(k)**2)/(dz(k)*dz(k-1)*(dz(k)+dz(k-1)))
@@ -446,31 +385,18 @@ do n = 1, npt
   enddo !i
   EnCineticaMedia = EnCineticaMedia/((in-2)*(kn-2))
   Vorticidade = Vorticidade/((in-2)*(kn-2))
-
-! Calculando a Vorticidade no centro do jato
-!  i = int(1.0/2.0*real(in))
-!  k = int((kn+1)/2)
-!  dwdx = (w2(i+1,k)*dx(i-1)**2 + w2(i,k)*(dx(i)**2-dx(i-1)**2) - w2(i-1,k)*dx(i)**2)/(dx(i)*dx(i-1)*(dx(i)+dx(i-1)))
-!  dudz = (u2(i,k+1)*dz(k-1)**2 + u2(i,k)*(dz(k)**2-dz(k-1)**2) - u2(i,k-1)*dz(k)**2)/(dz(k)*dz(k-1)*(dz(k)+dz(k-1)))
-!  Vorticidade = dwdx - dudz 
-
-
   
 ! Calculando A2, B2, C2, D2, E2, e F2 
   A2 = 2.0*dt*alphah*Lap2D(theta2, dx, dz, in, kn)+ theta2
   B2 = 2.0*rho_ref*g/temp_ref*Grad1D(T2,dz,2, in, kn)
-!  B2(:,1) = B2(:,2)
-!  B2(:,kn) = B2(:,kn-1)
   C2 = 2.0*mi*( Grad1D(lap_u2,dx,1, in, kn) + Grad1D(lap_w2,dz,2, in, kn) ) - lap_p2
   D2 = dt/rho_ref*(-grad_p2_x + 2.0*mi*lap_u2) + u2 
   E2 = 2.0*dt*g*T2/temp_ref
   F2 = dt/rho_ref*(-grad_p2_z + 2.0*mi*lap_w2) + w2
-
     
-
   if (n>(npt-nptMediaFlut) ) then
 
-! Calculando as Medias 
+!   Calculando as Medias 
     if (MediaFlutFlag == 0) then !calcula media
       umed = umed + u2
       wmed = wmed + w2
@@ -479,7 +405,7 @@ do n = 1, npt
       thetamed = thetamed + theta2
     endif                     
 
-! Calculando as Flutuacoes
+!   Calculando as Flutuacoes
     if (MediaFlutFlag == 1) then  !calcula flutuacoes
       write(15,*) n*dt, ((u2(PontosCalcFlutX(ii),PontosCalcFlutZ(jj))-umed(PontosCalcFlutX(ii),PontosCalcFlutZ(jj)),ii=1,3), jj=1,3)
       write(17,*) n*dt, ((w2(PontosCalcFlutX(ii),PontosCalcFlutZ(jj))-wmed(PontosCalcFlutX(ii),PontosCalcFlutZ(jj)),ii=1,3), jj=1,3)
@@ -489,7 +415,7 @@ do n = 1, npt
                                                                                                                     ii=1,3), jj=1,3)
     endif
 
-! Registranto a serie temporal full
+!   Registranto a serie temporal full
     write(27,*) n*dt, ((u2(PontosCalcFlutX(ii),PontosCalcFlutZ(jj)),ii=1,3), jj=1,3)
     write(29,*) n*dt, ((w2(PontosCalcFlutX(ii),PontosCalcFlutZ(jj)),ii=1,3), jj=1,3)
     write(31,*) n*dt, ((p2(PontosCalcFlutX(ii),PontosCalcFlutZ(jj)),ii=1,3), jj=1,3)

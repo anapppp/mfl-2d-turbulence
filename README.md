@@ -4,3 +4,23 @@
 O Método de Filtragem Lagrangeana (MFL) é um método destinado à simulação numérica de escoamentos turbulentos, baseado na filtragem espacial das equações de Navier–Stokes escritas no referencial Lagrangeano. A filtragem se dá implicitamente através da discretização das equações em diferenças finitas. A grande vantagem da utilização do referencial Lagrangeano é que, neste referencial, as não linearidades das equações não são explicitadas. Com isso, é possível filtrar as equações sem que haja necessidade de se utilizarem parametrizações de processos subgrade.
 
 No presente trabalho, o MFL foi utilizado na simulação do jato plano turbulento, com o objetivo de mostrar a capacidade deste método em simular este tipo de escoamento turbulento. Foram realizadas simulações com número de Reynolds entre 2.970 e 10.000. Os resultados se mostraram, de forma geral, satisfatórios quando comparados com resultados teóricos e experimentais. Além disso, o modelo foi capaz de simular adequadamente o espectro de energia. O MFL também se mostrou computacionalmente eficiente e competitivo em relação a outros métodos de simulação de escoamentos turbulentos usualmente utilizados.
+
+
+## Docker
+
+### Build o container
+```prompt
+docker build -t mfl-simulation .
+```
+
+
+### Rodar o Fortran
+```prompt
+docker run --rm mfl-simulation
+``` 
+
+
+### Rodar o Python
+```prompt
+docker run --rm mfl-simulation python3 seu_script.py
+```                         

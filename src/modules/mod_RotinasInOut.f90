@@ -1,7 +1,4 @@
 module RotinasInOut
-!-------------------------
-!Modulo com subrotina de entrada e saida (leitura e impressao de arquivos)
-!-------------------------
 implicit none 
  contains
 
@@ -32,15 +29,14 @@ subroutine printResultCampo2D(var, vetx, vetz, nomecaso, variavel, dt)
 ! O diretorio padrao para impressao dos resultados é ./Resultados
 
 
-
-real :: var(:,:), vetx(:), vetz(:)
+  real :: var(:,:), vetx(:), vetz(:)
 character*8 :: nomecaso, dt
 character :: variavel
 integer :: i, k
 
 dt = adjustl(dt)
 
-open(unit=18, file = "./Resultados/"//nomecaso//"."//variavel//"."//dt, status="unknown") 
+open(unit=18, file = "./results/"//nomecaso//"."//variavel//"."//dt, status="unknown") 
 
 write(18,*) vetx
 write(18,*) vetz
@@ -51,9 +47,6 @@ enddo
 
 close(18)
 end subroutine printResultCampo2D
-
-
-!-------------------------
 
 
 subroutine ReadGrade(nomegrade, in, kn, x, z, dx, dz)
@@ -121,9 +114,6 @@ close(18)
 return
 
 end subroutine ReadCampo2D
-
-
-!-------------------------
 
 
 subroutine printResultPerfilMedio(var, vetz, nomecaso, variavel)

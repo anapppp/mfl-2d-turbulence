@@ -1,14 +1,8 @@
 module Interpolacao
-!-------------------------
-!Modulo com funcoes de interpolacao
-!-------------------------
 implicit none 
  contains
 
-!-------------------------
-
-
-real function intCubicLagr1D(f0,f1,f2,f3,x0,deltax1,deltax2,deltax3,ptox)
+ real function intCubicLagr1D(f0,f1,f2,f3,x0,deltax1,deltax2,deltax3,ptox)
 ! Retorna o valor interpolado um polinomio de Lagrange ordem 3
 ! f0,f1,f2,f3: valores prescritos da funcao
 ! x0: f(x0) = f0
@@ -41,9 +35,6 @@ intCubicLagr1D = f0*l0 + f1*l1 + f2*l2 + f3*l3
 end function intCubicLagr1D
 
 
-!-------------------------
-
-
 real function intCubicLagr2D(f,vetx,vety,vdx,vdy, idx_x, idx_y, ptox, ptoy)
 ! Retorna o valor interpolado no ponto (ptox,ptoy)
 ! São utilizados 16 pontos de grade. O ponto de grade adotado como referencia
@@ -70,9 +61,6 @@ fintx4 =  intCubicLagr1D(f(idx_x-2,idx_y+1),f(idx_x-1,idx_y+1),f(idx_x,idx_y+1),
 intCubicLagr2D = intCubicLagr1D(fintx1,fintx2,fintx3,fintx4,vety(idx_y-2),vdy(idx_y-2),vdy(idx_y-1),vdy(idx_y),ptoy)
  
 end function intCubicLagr2D
-
-
-!-------------------------
 
 
 function PontoDeReferencia1D(vetx, vdx, ptox)
@@ -107,9 +95,6 @@ return
 end function PontoDeReferencia1D
 
 
-!-------------------------
-
-
 subroutine CheckIdxPontoReferencia(idx_ptoref,ilim)
 ! Esta subrotina verifica se os 4 pontos de grade necessários 
 ! para a interpolação cubica estão dentro do dominio. Se não
@@ -126,11 +111,4 @@ return
 end subroutine  CheckIdxPontoReferencia
 
 
-!-------------------------
-
-
 end module Interpolacao
-
-
-
-

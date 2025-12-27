@@ -1,12 +1,6 @@
 module DiferencasFinitas
-!-------------------------
-!Modulo com subrotina para impressao dos saidas do modelo no formato padrao
-!-------------------------
 implicit none 
  contains
-
-!-------------------------
-
 
 subroutine EDP2GaussSeidelGradeUniforme(f, g, dx, dy, in, jn)
 implicit none
@@ -54,9 +48,6 @@ enddo
 
 return
 end subroutine EDP2GaussSeidelGradeUniforme
-
-
-!-------------------------
 
 
 subroutine EDP2GaussSeidel(f, g, dx, dy, in, jn)
@@ -166,13 +157,10 @@ do
 
   fold = f   
   
-enddo !iteracoes
+enddo 
 
 return
 end subroutine EDP2GaussSeidel
-
-
-!-------------------------
 
 
 subroutine EDP2GaussSeidel_Xadrez(f, g, dx, dy, in, jn)
@@ -182,8 +170,6 @@ implicit none
 ! lap(f) = g => resolvo f
 ! usando Gauss-Seidel e SOR. 
 ! Condição de Contorno: DIRICHLET no topo e nas laterais
-
-
 
 real :: Ax, Ay, B, omega, erromax, errolim, erro, ptoFantasmaX, ptoFantasmaY, Ly
 real :: dx(:), dy(:), g(:,:), f(:,:), fold(in,jn)
@@ -200,7 +186,6 @@ do
   cont = cont+1
   erromax = 0.0 
 
-!1
   do i=2,in-1,2
     do j=2,jn-1,2     
             
@@ -225,8 +210,6 @@ do
   enddo !i
   fold = f 
 
-!2
-
   do i=3,in-1,2
     do j=2,jn-1,2     
       
@@ -250,9 +233,6 @@ do
     enddo !j
   enddo !i
   fold = f 
-
-
-! !3
 
   do i=2,in-1,2
     do j=3,jn-1,2  
@@ -318,11 +298,6 @@ enddo !iteracoes
 
  return
 end subroutine EDP2GaussSeidel_Xadrez
-
-
-
-!-------------------------
-
 
 
 subroutine EDP2GaussSeidel_xUnif_CondContCiclica(f, g, dx, vdy, in, jn)
@@ -432,8 +407,6 @@ f(:,1) = f(:,2)
 return
 end subroutine EDP2GaussSeidel_xUnif_CondContCiclica
 
-!-------------------------
-
 
 subroutine EDP2GaussSeidel_CondContCiclica(f, g, dx, dy, in, jn)
 implicit none
@@ -541,9 +514,6 @@ enddo
 end subroutine EDP2GaussSeidel_CondContCiclica
 
 
-!-------------------------
-
-
 function Lap2D(f, vdx, vdy, in, jn)
 ! Calcula o laplaciano de f em um campo 2D
 ! para grade nao uniforme
@@ -574,9 +544,6 @@ return
 end function Lap2D
 
 
-!-------------------------
-
-
 function Grad1D(g, vdelta, dimFlag, in, jn)
 ! Calcula o gradiente de f(x,y) em relacao a x ou y em 1D
 ! para grade não-uniforme
@@ -588,7 +555,6 @@ function Grad1D(g, vdelta, dimFlag, in, jn)
 real :: g(:,:), vdelta(:), Grad1D(in,jn)
 real, allocatable :: f(:)
 integer :: i, j, in, jn, dimFlag
-
 
 Grad1D = 0.0
 
@@ -607,8 +573,6 @@ allocate(f(in))
   
 endif
 
-
-
 if (dimFlag==2) then  !deriva em relacao a y
 allocate(f(jn))  
   
@@ -623,15 +587,7 @@ allocate(f(jn))
   enddo
 endif
 
-
 return
 end function Grad1D
 
-
-!-------------------------
-
-
 end module DiferencasFinitas
-
-
-

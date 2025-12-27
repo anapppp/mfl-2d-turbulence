@@ -1,14 +1,11 @@
 include 'mod_Interpolacao.f90'
 module PontoDePartida
-!-------------------------
-!Modulo com funcoes necessárias para calcular o valor da funcao no ponto de partida
-!-------------------------
 use Interpolacao
 implicit none 
  contains
 
  function CalculaPontoDePartida3NTRobert(ii, jj, vetx, vety, vdx, vdy, velu, velv, dt, xnFlag)
-!  Calcula o ponto de partida pelo método de 3 niveis de tempo de Robert (1 passso). Fonte: 
+!  Calcula o ponto de partida pelo método de 3 niveis de tempo de Robert (1 passo). Fonte: 
 !     Robert, A. A stable numerical integration scheme for the primitive meteorological 
 !     equations Atmosphere-Ocean, Taylor & Francis, 1981, 19, 35-46
 
@@ -37,9 +34,6 @@ return
 end function CalculaPontoDePartida3NTRobert
 
 
-!-------------------------
-
-
 function CalculaPontoDePartida2P3NT(ii, jj, vetx, vety, vdx, vdy, velu, velv, dt, xnFlag)
 ! Calcula o ponto de partida utilizando o método de 2 passos e 3 niveis de tempo. 
 !
@@ -58,10 +52,6 @@ integer :: ii, jj, iteracao, step, xnFlag
       xn = vetx(ii)
       yn = vety(jj)
       
-      !if (xnFlag == 0)  n = 2.0      
-      !if (xnFlag == 1)  n = 1.0
-
-
       do step = 1,2  !estes são os dois passos
         a = 0.0
         b = 0.0
@@ -81,18 +71,12 @@ integer :: ii, jj, iteracao, step, xnFlag
       if (max(abs(a-aold),abs(b-bold)) >=1.0E-02) write(*,*) 'Ponto de Partida: Calculo nao convergiu',&
                                                              ii, jj, max(abs(a-aold),abs(b-bold))
             
-!      CalculaPontoDePartida2P3NT = (/ xn , yn /)
-      
-      
  if (xnFlag == 0)  CalculaPontoDePartida2P3NT = (/ xn , yn /)      
  if (xnFlag == 1)  CalculaPontoDePartida2P3NT = (/ xn+(vetx(ii)-xn)/2.0 , yn+(vety(jj)-yn)/2.0 /)
       
 return
 
 end function CalculaPontoDePartida2P3NT
-
-
-!-------------------------
 
 
 real function  ValorNoPontoDePartida(f, vetx, vety, vdx, vdy, vetPtoPartida, ii, jj)
@@ -191,9 +175,6 @@ yn = vetPtoPartida(2)
     ValorNoPontoDePartida = vpp
 
 end function  ValorNoPontoDePartida
-
-
-!-------------------------
 
 
 real function  ValorNoPontoDePartida_CondContCiclica(f, vetx, vety, vdx, vdy, vetPtoPartida, ii, jj)
@@ -423,10 +404,6 @@ dy = vdy(1)
 
 
 end function  ValorNoPontoDePartidaGradeUniforme
-
-
-!-------------------------
-
 
 
 end module PontoDePartida
