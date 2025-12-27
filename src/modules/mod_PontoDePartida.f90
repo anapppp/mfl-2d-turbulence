@@ -297,9 +297,6 @@ yn = vetPtoPartida(2)
 end function  ValorNoPontoDePartida_CondContCiclica
 
 
-!-------------------------
-
-
 real function  ValorNoPontoDePartidaGradeUniforme(f, vetx, vety, vdx, vdy, xn, yn, ii, jj)
 ! Esta funcao calcula o valor da funcao f interpolado no ponto (ptox,ptoy)
 ! Se o ponto esta fora do dominio, a o valor é substituido pelo valor 

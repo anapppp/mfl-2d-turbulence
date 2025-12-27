@@ -314,19 +314,13 @@ implicit none
 real :: A, B, R, p1, p2, p3, omega, erromax, errolim, erro, dx
 real :: vdy(:), g(:,:), f(:,:), fold(in,jn)
 integer :: i, j, in, jn, cont, ierrmax, jerrmax
-! character*8 :: passoTempo
-
-!  passoTempo = adjustl(passoTempo)
-!  open(unit=18, file = "./Resultados/erro."//passoTempo, status="unknown") 
   
- errolim = 1.0E-4
- omega = 1.0
+errolim = 1.0E-4
+omega = 1.0
+fold  =  f
+cont = 0
 
- fold  =  f
- 
- cont = 0
-do	
-  
+do  
   cont = cont+1
   erromax = 0.0 
    
@@ -507,8 +501,7 @@ do
 
   fold = f    
 
-enddo
-
+ enddo
 
  return
 end subroutine EDP2GaussSeidel_CondContCiclica
@@ -538,7 +531,6 @@ do i = 2, in-1
 
   enddo
 enddo
-
 
 return
 end function Lap2D

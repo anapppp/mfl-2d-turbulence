@@ -72,13 +72,6 @@ integer :: i, PontoDeReferencia1D
 
  do i = 1,size(vetx)-1
 
-!   soma_distancias = abs(ptox - vetx(i))  +  abs(ptox - vetx(i+1))
-    
-!   if (soma_distancias <= vdx(i)) then
-!     PontoDeReferencia1D = i+1
-!     exit
-!   endif
-
    if (abs(ptox-vetx(i)) <= vdx(i)) then
      PontoDeReferencia1D = i+1
      exit

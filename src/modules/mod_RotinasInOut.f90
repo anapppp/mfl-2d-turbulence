@@ -126,7 +126,7 @@ subroutine printResultPerfilMedio(var, vetz, nomecaso, variavel)
 ! onde "variavel" pode ter apenas 1 caractere
 ! Exemplo: simteste.T.med
 !
-! O diretorio padrao para impressao dos resultados é ./Resultados
+! O diretorio padrao para impressao dos resultados é ./results
 
 
 real :: var(:), vetz(:)
