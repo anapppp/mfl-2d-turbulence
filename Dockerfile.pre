@@ -1,0 +1,20 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+    gfortran \
+    && rm -rf /var/lib/apt/lists/*  
+
+WORKDIR /app
+COPY preprocess .
+COPY cases ./cases
+
+
+# RUN gfortran -O3 -funroll-loops -fopenmp \
+#     makeGrid/MakeGrid_uniforme.f90 \
+#     -o makeGrid_uniforme.exe
+
+# RUN gfortran -O3 -funroll-loops -fopenmp \
+#     makeInitialCondition/pressao.f90 \
+#     -o makeInitialConditionPressao.exe
+
+# CMD ./makeGrid_uniforme.exe simPlaca && ./makeInitialConditionPressao.exe

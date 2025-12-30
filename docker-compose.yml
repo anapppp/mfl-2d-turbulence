@@ -1,0 +1,44 @@
+volumes:
+  data:
+
+
+services:
+  preprocess:
+    build:
+      dockerfile: Dockerfile.pre
+    container_name: preprocess
+    environment:
+      CASE: ${CASE}
+    volumes:
+      - data:/data
+    command: >
+      sh -c " set -e; echo CASE=${CASE}; if [ -z \"${CASE}\" ]; then
+        echo 'ERROR: CASE not set' && exit 1;
+      fi; if [ ! -d /data/cases ]; then
+        cp -r /app/cases /data/cases;
+      fi; mkdir -p /data/cases/${CASE}/input /data/cases/${CASE}/log /data/cases/${CASE}/results "
+
+  mfl2d:
+    build:
+      dockerfile: Dockerfile.mfl2d
+    container_name: mfl2d
+    depends_on:
+      - preprocess
+    environment:
+      CASE: ${CASE}
+      OMP_NUM_THREADS: ${OMP_NUM_THREADS}
+    command: ./mfl2d ${CASE}
+    volumes:
+      - data:/data
+
+  postprocess:
+    build:
+      dockerfile: Dockerfile.post
+    container_name: postprocess
+    depends_on:
+      - mfl2d
+    environment:
+      CASE: ${CASE}
+    # command: python3 postprocess.py
+    volumes:
+      - data:/data
