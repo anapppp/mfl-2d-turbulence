@@ -11,10 +11,10 @@ COPY mfl2d .
 
 RUN gfortran -O3 -march=native -funroll-loops -fopenmp \
     -I/usr/include \
-    mfl2d/src/modules/mod_PontoDePartida.f90 \
-    mfl2d/src/modules/mod_RotinasInOut.f90 \
-    mfl2d/src/modules/mod_DiferencasFinitas.f90 \
-    mfl2d/src/main.f90 \
+    src/modules/mod_RotinasInOut.f90 \
+    src/modules/mod_PontoDePartida.f90 \
+    src/modules/mod_DiferencasFinitas.f90 \
+    src/main.f90 \
     -lnetcdff -lnetcdf \
     -o mfl2d
 

@@ -2,7 +2,7 @@ module RotinasInOut
 implicit none 
  contains
 
-subroutine printResultCampo2D(var, vetx, vetz, nomecaso, variavel, dt)
+subroutine printResultCampo2D(var, vetx, vetz, file)
 ! Imprime os resultados em formato padrao. 
 ! #1 linha: vetor x
 ! #2 linha: vetor z
@@ -29,14 +29,11 @@ subroutine printResultCampo2D(var, vetx, vetz, nomecaso, variavel, dt)
 ! O diretorio padrao para impressao dos resultados é ./Resultados
 
 
-  real :: var(:,:), vetx(:), vetz(:)
-character*8 :: nomecaso, dt
-character :: variavel
+real :: var(:,:), vetx(:), vetz(:)
+character*50 :: file
 integer :: i, k
 
-dt = adjustl(dt)
-
-open(unit=18, file = "./results/"//nomecaso//"."//variavel//"."//dt, status="unknown") 
+open(unit=18, file = file, status="unknown") 
 
 write(18,*) vetx
 write(18,*) vetz
@@ -49,16 +46,16 @@ close(18)
 end subroutine printResultCampo2D
 
 
-subroutine ReadGrade(nomegrade, in, kn, x, z, dx, dz)
+subroutine ReadGrade(file, in, kn, x, z, dx, dz)
 ! Le o arquivo de grade e retorna vetores x, z, dx, e dz
 
-real, dimension(:) :: x, z, dx, dz
-integer :: i, k, in, kn
-character*8  :: nomegrade
-character*14 :: arquivoGrade
+  
+  real, dimension(:) :: x, z, dx, dz
+  integer :: i, k, in, kn
+  character*39  :: file
 
-arquivoGrade = "./"//nomegrade//".grd"
-open(unit=18,  file = arquivoGrade)
+
+open(unit=18,  file = trim(file), status="old")
 
 read(18,*)
 
@@ -88,7 +85,7 @@ end subroutine ReadGrade
 
 
 
-subroutine ReadCampo2D(nomearquivo, var, in, kn)
+subroutine ReadCampo2D(file, var, in, kn)
 ! Le o arquivo em formato padrao, idem ao dado pela 
 ! funcao "printResultCampo2D"
 !
@@ -97,9 +94,9 @@ subroutine ReadCampo2D(nomearquivo, var, in, kn)
 
 real :: var(:,:)
 integer :: i, k, in, kn
-character*8  :: nomearquivo
+character*50  :: file
 
-open(unit=18,  file = nomearquivo)
+open(unit=18,  file = trim(file))
 
 
 read(18,*)
@@ -116,7 +113,7 @@ return
 end subroutine ReadCampo2D
 
 
-subroutine printResultPerfilMedio(var, vetz, nomecaso, variavel)
+subroutine printResultPerfilMedio(var, vetz, file, variavel)
 ! Imprime os resultados em formato padrao. 
 ! #1 coluna: vetor z
 ! #2 coluna: vetor var
@@ -130,11 +127,13 @@ subroutine printResultPerfilMedio(var, vetz, nomecaso, variavel)
 
 
 real :: var(:), vetz(:)
-character*8 :: nomecaso
+character*21 :: file
 character :: variavel
 integer :: k
 
-open(unit=18, file = "./Resultados/"//nomecaso//"."//variavel//".med", status="unknown") 
+file = trim(file)
+
+open(unit=18, file = file//"."//variavel//".med", status="unknown") 
 
 do k=1,size(vetz)
   write(18,*) vetz(k),var(k)

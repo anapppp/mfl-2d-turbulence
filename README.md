@@ -92,10 +92,32 @@ docker run --rm mfl-simulation python3 seu_script.py
 docker compose up --build
 ```
 
-### Limpa e cria o container
+### Limpa e cria o container -> Melhor dos melhores
 
 ``` 
 docker compose down -v
 docker compose build --no-cache preprocess
 docker compose up preprocess
 ```
+
+```
+docker compose build --no-cache mfl2d
+docker compose up mfl2d
+```
+
+```
+docker compose build --no-cache postprocess
+docker compose up postprocess
+```
+
+### Limpa o cache do build
+
+```
+docker builder prune
+```
+
+### Remover Containers parados
+```
+docker container prune
+```
+Idem imagens e volumes

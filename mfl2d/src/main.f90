@@ -18,7 +18,7 @@ implicit none
  integer :: i, k, n, in, kn, npt, nptprint, nptMediaFlut, MediaFlutFlag, contpt
  integer :: uCiFlag, wCiFlag, pCiFlag, TCiFlag, PontosCalcFlutX(3), PontosCalcFlutZ(3), ii, jj
  character*8  :: nomecaso, nomegrade, passotempo, uCiFile, wCiFile, pCiFile, TCiFile
- character(len=512) :: url
+ character*21 :: url
 
  
  namelist / dominio / nomegrade
@@ -32,7 +32,7 @@ implicit none
 
  call get_environment_variable("CASE", nomecaso)
 nomecaso = trim(nomecaso)
-url = "/data/cases/" // nomecaso // "/"
+url = "/data/cases/"//nomecaso//"/"
 
  ! Lendo dados do arquivo nomecaso.cfg
  open(unit=8,  file = url//"input/"//nomecaso//".cfg", status="old", delim="apostrophe")
@@ -48,8 +48,18 @@ url = "/data/cases/" // nomecaso // "/"
  open(unit=10,  file =  url//"input/"//nomegrade//".grd", status="old")
  read(10,*) in, kn 
  close(10)
+ allocate( x(in), z(kn), dx(in-1), dz(kn-1) )
+ allocate( umed(in,kn), wmed(in,kn), pmed(in,kn), Tmed(in,kn), thetamed(in,kn) )
+ allocate( p0(in,kn), p1(in,kn), p2(in,kn), theta0(in,kn), theta1(in,kn), theta2(in,kn) )
+ allocate( u0(in,kn), w0(in,kn), u1(in,kn), w1(in,kn), u2(in,kn), w2(in,kn), T2(in,kn) )
+ allocate( A0(in,kn), A1(in,kn), A2(in,kn), B1(in,kn), B2(in,kn), C0(in,kn), C1(in,kn), C2(in,kn) )
+ allocate( D0(in,kn), D1(in,kn), D2(in,kn), E1(in,kn), E2(in,kn), F0(in,kn), F1(in,kn), F2(in,kn) )
+ allocate( lap_p0(in,kn), lap_p1(in,kn), lap_p2(in,kn), pressao(in,kn) )
+ allocate( lap_u0(in,kn), lap_u1(in,kn), lap_u2(in,kn), lap_w0(in,kn), lap_w1(in,kn), lap_w2(in,kn) )
+ allocate( grad_p0_x(in,kn), grad_p1_x(in,kn), grad_p2_x(in,kn), grad_p0_z(in,kn), grad_p1_z(in,kn), grad_p2_z(in,kn) )
+
  ! Lendo o arquivo de grade
- call ReadGrade(nomegrade, in, kn, x, z, dx, dz)
+ call ReadGrade(url//"input/"//nomegrade//".grd", in, kn, x, z, dx, dz)
 
  open(unit=9,  file = url//"log/"//nomecaso//".inf", status="unknown")
  open(unit=11, file = url//"log/"//nomecaso//".log", status="unknown")
@@ -60,16 +70,6 @@ url = "/data/cases/" // nomecaso // "/"
  open(unit=31, file = url//"results/"//nomecaso//".p.full", status="unknown")
  open(unit=33, file = url//"results/"//nomecaso//".t.full", status="unknown")
  open(unit=35, file = url//"results/"//nomecaso//".q.full", status="unknown")  
-
- allocate( x(in), z(kn), dx(in-1), dz(kn-1) )
- allocate( umed(in,kn), wmed(in,kn), pmed(in,kn), Tmed(in,kn), thetamed(in,kn) )
- allocate( p0(in,kn), p1(in,kn), p2(in,kn), theta0(in,kn), theta1(in,kn), theta2(in,kn) )
- allocate( u0(in,kn), w0(in,kn), u1(in,kn), w1(in,kn), u2(in,kn), w2(in,kn), T2(in,kn) )
- allocate( A0(in,kn), A1(in,kn), A2(in,kn), B1(in,kn), B2(in,kn), C0(in,kn), C1(in,kn), C2(in,kn) )
- allocate( D0(in,kn), D1(in,kn), D2(in,kn), E1(in,kn), E2(in,kn), F0(in,kn), F1(in,kn), F2(in,kn) )
- allocate( lap_p0(in,kn), lap_p1(in,kn), lap_p2(in,kn), pressao(in,kn) )
- allocate( lap_u0(in,kn), lap_u1(in,kn), lap_u2(in,kn), lap_w0(in,kn), lap_w1(in,kn), lap_w2(in,kn) )
- allocate( grad_p0_x(in,kn), grad_p1_x(in,kn), grad_p2_x(in,kn), grad_p0_z(in,kn), grad_p1_z(in,kn), grad_p2_z(in,kn) )
 
 
  
@@ -196,35 +196,33 @@ url = "/data/cases/" // nomecaso // "/"
  endif
 
  if (MediaFlutFlag == 1) then
-   call system("cp ./results/"//nomecaso//".u.med ./mediaarq") 
+   call system("cp "//url//"results/"//nomecaso//".u.med ./mediaarq") 
    call ReadCampo2D('mediaarq', umed, in, kn)
-   call system("cp ./results/"//nomecaso//".w.med ./mediaarq")
+   call system("cp "//url//"results/"//nomecaso//".w.med ./mediaarq")
    call ReadCampo2D('mediaarq', wmed, in, kn)
-   call system("cp ./results/"//nomecaso//".p.med ./mediaarq")
+   call system("cp "//url//"results/"//nomecaso//".p.med ./mediaarq")
    call ReadCampo2D('mediaarq', pmed, in, kn)
-   call system("cp ./results/"//nomecaso//".t.med ./mediaarq")
+   call system("cp "//url//"results/"//nomecaso//".t.med ./mediaarq")
    call ReadCampo2D('mediaarq', Tmed, in, kn)
-   call system("cp ./results/"//nomecaso//".q.med ./mediaarq")
+   call system("cp "//url//"results/"//nomecaso//".q.med ./mediaarq")
    call ReadCampo2D('mediaarq', thetamed, in, kn)
    call system("rm mediaarq")
 
-   open(unit=15, file = "./results/"//nomecaso//".u.flu", status="unknown")
-   open(unit=17, file = "./results/"//nomecaso//".w.flu", status="unknown")
-   open(unit=19, file = "./results/"//nomecaso//".p.flu", status="unknown")
-   open(unit=21, file = "./results/"//nomecaso//".t.flu", status="unknown")
-   open(unit=23, file = "./results/"//nomecaso//".q.flu", status="unknown")  
+   open(unit=15, file = url//"results/"//nomecaso//".u.flu", status="unknown")
+   open(unit=17, file = url//"results/"//nomecaso//".w.flu", status="unknown")
+   open(unit=19, file = url//"results/"//nomecaso//".p.flu", status="unknown")
+   open(unit=21, file = url//"results/"//nomecaso//".t.flu", status="unknown")
+   open(unit=23, file = url//"results/"//nomecaso//".q.flu", status="unknown")  
  endif
 
 
 write(passotempo,*) '0'
 
-call printResultCampo2D(u0, x, z, nomecaso, 'u',passotempo)
-call printResultCampo2D(w0, x, z, nomecaso, 'w',passotempo)
-call printResultCampo2D(p0, x, z, nomecaso, 'p',passotempo)
-call printResultCampo2D(theta0, x, z, nomecaso, 'q',passotempo)
-call printResultCampo2D(T2, x, z, nomecaso, 't',passotempo)
-
-
+call printResultCampo2D(u0, x, z, url//"results/"//nomecaso//'.u.'//passotempo)
+call printResultCampo2D(w0, x, z, url//"results/"//nomecaso//'.w.'//passotempo)
+call printResultCampo2D(p0, x, z, url//"results/"//nomecaso//'.p.'//passotempo)
+call printResultCampo2D(theta0, x, z, url//"results/"//nomecaso//'.q.'//passotempo)
+call printResultCampo2D(T2, x, z, url//"results/"//nomecaso//'.t.'//passotempo)
 
 !-------------------------------------------------------------------------!
 ! Inicio da previsao
@@ -364,11 +362,11 @@ do n = 1, npt
     write(passotempo,'(i8)') n
     write(11,*) 'n=',n,'Tempo(s) = ',n*dt
    
-    call printResultCampo2D(u2, x, z, nomecaso, 'u',passotempo)
-    call printResultCampo2D(w2, x, z, nomecaso, 'w',passotempo)
-    call printResultCampo2D(p2, x, z, nomecaso, 'p',passotempo)
-    call printResultCampo2D(theta2, x, z, nomecaso, 'q',passotempo)
-    call printResultCampo2D(T2, x, z, nomecaso, 't',passotempo)
+    call printResultCampo2D(u2, x, z, url//"results/"//nomecaso//'.u.'//passotempo)
+    call printResultCampo2D(w2, x, z, url//"results/"//nomecaso//'.w.'//passotempo)
+    call printResultCampo2D(p2, x, z, url//"results/"//nomecaso//'.p.'//passotempo)
+    call printResultCampo2D(theta2, x, z, url//"results/"//nomecaso//'.q.'//passotempo)
+    call printResultCampo2D(T2, x, z, url//"results/"//nomecaso//'.t.'//passotempo)
     contpt = 0
     
   endif
@@ -416,11 +414,11 @@ if (MediaFlutFlag == 0) then
   thetamed = thetamed/nptMediaFlut
 
   write(passotempo,'(a)') 'med'
-  call printResultCampo2D(umed, x, z, nomecaso, 'u',passotempo)
-  call printResultCampo2D(wmed, x, z, nomecaso, 'w',passotempo)
-  call printResultCampo2D(pmed, x, z, nomecaso, 'p',passotempo)
-  call printResultCampo2D(Tmed, x, z, nomecaso, 't',passotempo)
-  call printResultCampo2D(thetamed, x, z, nomecaso, 'q',passotempo)
+  call printResultCampo2D(umed, x, z, url//"results/"//nomecaso//'.u.'//passotempo)
+  call printResultCampo2D(wmed, x, z, url//"results/"//nomecaso//'.w.'//passotempo)
+  call printResultCampo2D(pmed, x, z, url//"results/"//nomecaso//'.p.'//passotempo)
+  call printResultCampo2D(Tmed, x, z, url//"results/"//nomecaso//'.t.'//passotempo)
+  call printResultCampo2D(thetamed, x, z, url//"results/"//nomecaso//'.q.'//passotempo)
 endif
 
 
