@@ -88,16 +88,12 @@ end subroutine ReadGrade
 subroutine ReadCampo2D(file, var, in, kn)
 ! Le o arquivo em formato padrao, idem ao dado pela 
 ! funcao "printResultCampo2D"
-!
-! O nome do arquivo deve ter 8 caracteres e deve 
-! estar no diretorio principal
 
 real :: var(:,:)
 integer :: i, k, in, kn
-character*50  :: file
+character*40  :: file
 
 open(unit=18,  file = trim(file))
-
 
 read(18,*)
 read(18,*)

@@ -86,13 +86,14 @@ url = "/data/cases/"//nomecaso//"/"
      u0 = uCiUnif
    endif
  endif  
- if (uCiFlag == 1) call ReadCampo2D(uCiFile, u0, in, kn)
+
+ if (uCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(uCiFile), u0, in, kn)
  if (wCiFlag == 0) w0 = wCiUnif
- if (wCiFlag == 1) call ReadCampo2D(wCiFile, w0, in, kn)
+ if (wCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(wCiFile), w0, in, kn)
  if (pCiFlag == 0) p0 = pCiUnif
- if (pCiFlag == 1) call ReadCampo2D(pCiFile, p0, in, kn)
+ if (pCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(pCiFile), p0, in, kn)
  if (TCiFlag == 0) T2 = TCiUnif
- if (TCiFlag == 1) call ReadCampo2D(TCiFile, T2, in, kn)
+ if (TCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(TCiFile), T2, in, kn)
  
 
 ! Arquivo nomecaso.inf
