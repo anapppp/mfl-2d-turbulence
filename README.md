@@ -62,7 +62,7 @@ No presente trabalho, o MFL foi utilizado na simulação do jato plano turbulent
 ```
 
 ## Compilação e execução: 
-Noo diretorio principal digite:
+No diretorio principal digite:
 
 ```prompt
 gfortran main.f90 -o ./mfl2dTurbulence
@@ -87,3 +87,15 @@ docker run --rm mfl-simulation
 ```prompt
 docker run --rm mfl-simulation python3 seu_script.py
 ```                         
+
+```
+docker compose up --build
+```
+
+### Limpa e cria o container
+
+``` 
+docker compose down -v
+docker compose build --no-cache preprocess
+docker compose up preprocess
+```

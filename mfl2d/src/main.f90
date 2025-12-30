@@ -18,37 +18,24 @@ implicit none
  integer :: i, k, n, in, kn, npt, nptprint, nptMediaFlut, MediaFlutFlag, contpt
  integer :: uCiFlag, wCiFlag, pCiFlag, TCiFlag, PontosCalcFlutX(3), PontosCalcFlutZ(3), ii, jj
  character*8  :: nomecaso, nomegrade, passotempo, uCiFile, wCiFile, pCiFile, TCiFile
+ character(len=512) :: url
 
+ 
+ namelist / dominio / nomegrade
+ namelist / runconfig / dt, npt, nptprint, nptMediaFlut, MediaFlutFlag
+ namelist / paramfisicos / mi, alphah, R, cp, g
+ namelist / estbasreferencia / rho_ref, temp_ref, press_ref_sup
+ namelist / condicaoinicial / uCiFlag, uCiUnif, uCiFile, wCiFlag, wCiUnif, wCiFile, &
+ pCiFlag, pCiUnif, pCiFile, TCiFlag, TCiUnif, TCiFile
+ namelist / condicaocontorno / uCcTop, uCcSup, wCcTop, wCcSup, TCcTop, TCcSup
+ 
 
-namelist / dominio / nomegrade
-namelist / runconfig / dt, npt, nptprint, nptMediaFlut, MediaFlutFlag
-namelist / paramfisicos / mi, alphah, R, cp, g
-namelist / estbasreferencia / rho_ref, temp_ref, press_ref_sup
-namelist / condicaoinicial / uCiFlag, uCiUnif, uCiFile, wCiFlag, wCiUnif, wCiFile, &
-                             pCiFlag, pCiUnif, pCiFile, TCiFlag, TCiUnif, TCiFile
-namelist / condicaocontorno / uCcTop, uCcSup, wCcTop, wCcSup, TCcTop, TCcSup
+ call get_environment_variable("CASE", nomecaso)
+nomecaso = trim(nomecaso)
+url = "/data/cases/" // nomecaso // "/"
 
-call get_command_argument(1, nomecaso)
-
-if (len_trim(nomecaso) == 0) then
-  write(*,*) "Informe o nome da simulacao"
-  stop
-end if
-
-
- open(unit=8,  file = "./"//nomecaso//".cfg", delim="apostrophe")
- open(unit=9,  file = "./log/"//nomecaso//".inf", status="unknown")
- open(unit=11, file = "./log/"//nomecaso//".log", status="unknown")
- open(unit=13, file = "./results/"//nomecaso//".ecin", status="unknown")
- open(unit=25, file = "./results/"//nomecaso//".vort", status="unknown")
-
- open(unit=27, file = "./results/"//nomecaso//".u.full", status="unknown")
- open(unit=29, file = "./results/"//nomecaso//".w.full", status="unknown")
- open(unit=31, file = "./results/"//nomecaso//".p.full", status="unknown")
- open(unit=33, file = "./results/"//nomecaso//".t.full", status="unknown")
- open(unit=35, file = "./results/"//nomecaso//".q.full", status="unknown")  
-
-! Lendo dados do arquivo nomecaso.cfg
+ ! Lendo dados do arquivo nomecaso.cfg
+ open(unit=8,  file = url//"input/"//nomecaso//".cfg", status="old", delim="apostrophe")
  read(8, NML = dominio)
  read(8, NML = runconfig)
  read(8, NML = paramfisicos)
@@ -57,12 +44,23 @@ end if
  read(8, NML = condicaocontorno)
  close(8)
 
-
 ! Lendo o tamanho dos arrays
- open(unit=10,  file =  "./"//nomegrade//".grd")
+ open(unit=10,  file =  url//"input/"//nomegrade//".grd", status="old")
  read(10,*) in, kn 
  close(10)
- 
+ ! Lendo o arquivo de grade
+ call ReadGrade(nomegrade, in, kn, x, z, dx, dz)
+
+ open(unit=9,  file = url//"log/"//nomecaso//".inf", status="unknown")
+ open(unit=11, file = url//"log/"//nomecaso//".log", status="unknown")
+ open(unit=13, file = url//"results/"//nomecaso//".ecin", status="unknown")
+ open(unit=25, file = url//"results/"//nomecaso//".vort", status="unknown")
+ open(unit=27, file = url//"results/"//nomecaso//".u.full", status="unknown")
+ open(unit=29, file = url//"results/"//nomecaso//".w.full", status="unknown")
+ open(unit=31, file = url//"results/"//nomecaso//".p.full", status="unknown")
+ open(unit=33, file = url//"results/"//nomecaso//".t.full", status="unknown")
+ open(unit=35, file = url//"results/"//nomecaso//".q.full", status="unknown")  
+
  allocate( x(in), z(kn), dx(in-1), dz(kn-1) )
  allocate( umed(in,kn), wmed(in,kn), pmed(in,kn), Tmed(in,kn), thetamed(in,kn) )
  allocate( p0(in,kn), p1(in,kn), p2(in,kn), theta0(in,kn), theta1(in,kn), theta2(in,kn) )
@@ -74,8 +72,6 @@ end if
  allocate( grad_p0_x(in,kn), grad_p1_x(in,kn), grad_p2_x(in,kn), grad_p0_z(in,kn), grad_p1_z(in,kn), grad_p2_z(in,kn) )
 
 
- ! Lendo o arquivo de grade
- call ReadGrade(nomegrade, in, kn, x, z, dx, dz)
  
  
 ! Define Condicao Inicial
