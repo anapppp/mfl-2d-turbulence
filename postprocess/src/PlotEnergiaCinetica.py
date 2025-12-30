@@ -25,7 +25,7 @@ from class_Label import *
 # Lendo arquivo
 
 nomesim = sys.argv[1]
-filename = './Resultados/' + nomesim + '.ecin'
+filename = './cases/' + nomesim + '/results/' + nomesim + '.ecin'
 
 filedata = open(filename, 'r')
 dadosarq = filedata.readlines()
@@ -33,14 +33,14 @@ dadosarq = filedata.readlines()
 tempo = []
 encinetica = []
 for line in dadosarq:
-  a = map(float, line.split())
-  tempo.append(a[0])
-  encinetica.append(a[1])
+    t, ec = map(float, line.split())
+    tempo.append(t)
+    encinetica.append(ec)
 
-# Plotando 
+# Plotando
 
 fig = plt.figure()
-#plt.title(nomesim+ '\n' + 'Energia Cinetica')
+# plt.title(nomesim+ '\n' + 'Energia Cinetica')
 plt.xlabel('t(s)')
 plt.ylabel('Energia Cinetica ($m^{2}/s^{2}$)')
 

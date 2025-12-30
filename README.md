@@ -121,3 +121,15 @@ docker builder prune
 docker container prune
 ```
 Idem imagens e volumes
+
+### Entrar dentro o container
+
+```
+docker exec -it postprocess /bin/bash
+```
+
+### Copia o resultados do volume do container para o local
+
+```
+docker cp postprocess:/data/cases .
+```

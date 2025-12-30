@@ -24,9 +24,10 @@ from class_Label import *
 
 # Lendo arquivo
 
-filename = sys.argv[1]
-filename = './Resultados/' + filename
-X,Y,Z = LerArquivoPadrao(filename)
+nomesim = sys.argv[1]
+filename = './cases/' + nomesim + '/results/' + nomesim + '.u.100000'
+
+X, Y, Z = LerArquivoPadrao(filename)
 nomesim, nomelabel, nomevar, passotempo = Labels(filename)
 
 xplot = float(sys.argv[2])
@@ -35,16 +36,15 @@ xplot = float(sys.argv[2])
 # Encontrando ponto x mais proximo de xplot
 
 listdelta = []
-listdelta = abs(X[0,:]-xplot)
-deltax = X[0,1] - X[0,0]
+listdelta = abs(X[0, :]-xplot)
+deltax = X[0, 1] - X[0, 0]
 for i in range(len(listdelta)):
-  if listdelta[i] <= deltax:
-     ixplot = i
-     xplot = "%.1f" %X[0,ixplot] #str(X[0,ixplot]) 
+    if listdelta[i] <= deltax:
+        ixplot = i
+        xplot = "%.1f" % X[0, ixplot]  # str(X[0,ixplot])
 
-    
 
-# Plotando 
+# Plotando
 
 fig = plt.figure()
 # plt.title(nomesim+ '\n' +nomevar+ '\n' +'n='+passotempo+'   x='+xplot)
@@ -53,6 +53,6 @@ plt.title('x='+xplot + 'm')
 plt.ylabel('z(m)')
 plt.xlabel(nomelabel)
 
-plt.plot(Z[:,ixplot], Y[:,ixplot], color='k')
+plt.plot(Z[:, ixplot], Y[:, ixplot], color='k')
 
 plt.show()
