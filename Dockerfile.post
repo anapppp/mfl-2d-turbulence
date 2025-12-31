@@ -5,12 +5,13 @@ RUN apt-get update && apt-get install -y \
     python3-venv \
     python3-pip
 
-WORKDIR /app
+WORKDIR /postprocess
 COPY postprocess .
 
 # cria venv
-RUN python3 -m venv /venv
-ENV PATH="/venv/bin:$PATH"
+RUN python3 -m venv .venv
+ENV PATH=".venv/bin:$PATH"
 
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
+

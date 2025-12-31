@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     && rm -rf /var/lib/apt/lists/*  
 
-WORKDIR /app
+WORKDIR /preprocess
 COPY preprocess .
 COPY cases ./cases
 

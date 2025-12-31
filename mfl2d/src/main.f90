@@ -219,12 +219,11 @@ url = "/data/cases/"//nomecaso//"/"
 
 write(passotempo,*) '0'
 
-call printResultCampo2D(u0, x, z, url//"results/"//nomecaso//'.u.'//passotempo)
-call printResultCampo2D(w0, x, z, url//"results/"//nomecaso//'.w.'//passotempo)
-call printResultCampo2D(p0, x, z, url//"results/"//nomecaso//'.p.'//passotempo)
-call printResultCampo2D(theta0, x, z, url//"results/"//nomecaso//'.q.'//passotempo)
-call printResultCampo2D(T2, x, z, url//"results/"//nomecaso//'.t.'//passotempo)
-
+call printResultCampo2D(u0, x, z, url//"results/"//nomecaso//'.u.'//trim(passotempo))
+call printResultCampo2D(w0, x, z, url//"results/"//nomecaso//'.w.'//trim(passotempo))
+call printResultCampo2D(p0, x, z, url//"results/"//nomecaso//'.p.'//trim(passotempo))
+call printResultCampo2D(theta0, x, z, url//"results/"//nomecaso//'.q.'//trim(passotempo))
+call printResultCampo2D(T2, x, z, url//"results/"//nomecaso//'.t.'//trim(passotempo))
 !-------------------------------------------------------------------------!
 ! Inicio da previsao
 !-------------------------------------------------------------------------!

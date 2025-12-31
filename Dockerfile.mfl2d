@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     libnetcdff-dev \
     && rm -rf /var/lib/apt/lists/*  
 
-WORKDIR /app
+WORKDIR /mfl2d
 COPY mfl2d .
 
 RUN gfortran -O3 -march=native -funroll-loops -fopenmp \
@@ -20,6 +20,7 @@ RUN gfortran -O3 -march=native -funroll-loops -fopenmp \
 
 ENV OMP_NUM_THREADS=4
 ENV GFORTRAN_UNBUFFERED_ALL=y
+
 
 CMD ["./mfl2d"]
 

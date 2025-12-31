@@ -25,7 +25,7 @@ from class_Label import *
 # Lendo arquivo
 
 nomesim = sys.argv[1]
-filename = './cases/' + nomesim + '/results/' + nomesim + '.u.100000'
+filename = './cases/' + nomesim + '/results/' + nomesim + '.u.40000'
 
 X, Y, Z = LerArquivoPadrao(filename)
 nomesim, nomelabel, nomevar, passotempo = Labels(filename)

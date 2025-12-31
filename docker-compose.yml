@@ -9,14 +9,13 @@ services:
     container_name: preprocess
     environment:
       CASE: ${CASE}
+      INPUTS_DIR: ${INPUTS_DIR}
+      RESULTS_DIR: ${RESULTS_DIR}
+      LOGS_DIR: ${LOGS_DIR}
     volumes:
       - data:/data
     command: >
-      sh -c " set -e; echo CASE=${CASE}; if [ -z \"${CASE}\" ]; then
-        echo 'ERROR: CASE not set' && exit 1;
-      fi; if [ ! -d /data/cases ]; then
-        cp -r /app/cases /data/cases;
-      fi; mkdir -p /data/cases/${CASE}/input /data/cases/${CASE}/log /data/cases/${CASE}/results "
+      sh -c "mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} && cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR} && cp -r ./cases/${CASE}/results ${RESULTS_DIR} && cp -r ./cases/${CASE}/logs ${LOGS_DIR}"
 
   mfl2d:
     build:
@@ -24,7 +23,9 @@ services:
     container_name: mfl2d
     environment:
       CASE: ${CASE}
-      OMP_NUM_THREADS: ${OMP_NUM_THREADS}
+      INPUTS_DIR: ${INPUTS_DIR}
+      RESULTS_DIR: ${RESULTS_DIR}
+      LOGS_DIR: ${LOGS_DIR}
     command: ./mfl2d ${CASE}
     volumes:
       - data:/data
@@ -35,6 +36,10 @@ services:
     container_name: postprocess
     environment:
       CASE: ${CASE}
+      INPUTS_DIR: ${INPUTS_DIR}
+      RESULTS_DIR: ${RESULTS_DIR}
+      LOGS_DIR: ${LOGS_DIR}
     command: sleep infinity
+    # command: python ./postprocess/src/PlotEnergiaCinetica.py ${CASE}
     volumes:
       - data:/data

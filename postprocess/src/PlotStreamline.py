@@ -29,23 +29,24 @@ Os arquivos com os valores das velocidades devem estar na pasta ./Resultados
 
 nomedocaso = sys.argv[1]
 passodetempo = sys.argv[2]
-filenameU = './Resultados/' + nomedocaso + '.u.' + passodetempo
-filenameV = './Resultados/' + nomedocaso + '.w.' + passodetempo
+filenameU = './cases/' + nomedocaso + \
+    '/results/'+nomedocaso+'.u.' + passodetempo
+filenameV = './cases/' + nomedocaso + \
+    '/results/'+nomedocaso+'.w.' + passodetempo
 
-X,Y,U = LerArquivoPadrao(filenameU)
-X,Y,V = LerArquivoPadrao(filenameV)
+
+X, Y, U = LerArquivoPadrao(filenameU)
+X, Y, V = LerArquivoPadrao(filenameV)
 
 
 # Plotando
 
 plt.figure()
 
-plt.title(nomedocaso + '\n' +' n='+ passodetempo)
+plt.title(nomedocaso + '\n' + ' n=' + passodetempo)
 plt.ylabel('z(m)')
 plt.xlabel('x(m)')
 
-streamplot(X[0], Y[:,0], U, V, density=3, INTEGRATOR='RK4', color=U)
+streamplot(X[0], Y[:, 0], U, V, density=3, INTEGRATOR='RK4', color=U)
 
 plt.show()
-
-
