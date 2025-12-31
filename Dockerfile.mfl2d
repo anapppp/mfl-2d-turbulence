@@ -18,9 +18,9 @@ RUN gfortran -O3 -march=native -funroll-loops -fopenmp \
     -lnetcdff -lnetcdf \
     -o mfl2d
 
-ENV OMP_NUM_THREADS=4
+ENV OMP_NUM_THREADS=1
+ENV OMP_PROC_BIND=true
+ENV OMP_PLACES=cores
 ENV GFORTRAN_UNBUFFERED_ALL=y
 
-
 CMD ["./mfl2d"]
-

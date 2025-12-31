@@ -156,6 +156,7 @@ implicit none
  T2(:,kn) = TCcTop
 
 ! Inicializa variáveis
+
  gamma = g/cp  !lapse rate
 
  do i=1,in
@@ -262,6 +263,7 @@ do n = 1, npt
 
  contpt = contpt + 1
 
+ !$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
   do i = 2, in
    do k = 2, kn-1
 
@@ -280,6 +282,8 @@ do n = 1, npt
 
    enddo !k
   enddo !i
+ !$omp end parallel do
+
    
 ! Calculando o campo de Pressão 
 !  call EDP2GaussSeidel(p2, lap_p2, dx, dz, in, kn)
@@ -291,6 +295,7 @@ do n = 1, npt
   grad_p2_x = Grad1D(p2,dx,1, in, kn)
   grad_p2_z = Grad1D(p2,dz,2, in, kn)
 
+!$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
   do i = 2, in-1
    do k = 2, kn-1 
   !     Calculando o Ponto de Partida 
@@ -306,6 +311,7 @@ do n = 1, npt
                 
      enddo !k
   enddo !i
+!$omp end parallel do
 
 
 ! Calculando a velocidade vertical no topo
@@ -321,8 +327,11 @@ do n = 1, npt
   lap_w2(:,1) = 0.0   
 
 ! Calculando o desvio do estado de referencia da temperatura, a pressao total, a energia cinetica e a vorticidade medias
+
   EnCineticaMedia = 0.0
   Vorticidade = 0.0
+
+!$omp parallel do collapse(2) reduction(+:EnCineticaMedia, Vorticidade) private(dwdx, dudz)
   do i = 2, in-1
     do k = 2, kn-1   
       T2(i,k) = theta2(i,k) - temp_ref - gamma*z(k)
@@ -332,9 +341,11 @@ do n = 1, npt
       Vorticidade = Vorticidade + (dwdx - dudz)
     enddo !k
   enddo !i
+  !$omp end parallel do
+  
   EnCineticaMedia = EnCineticaMedia/((in-2)*(kn-2))
   Vorticidade = Vorticidade/((in-2)*(kn-2))
-  
+ 
 ! Calculando A2, B2, C2, D2, E2, e F2 
   A2 = 2.0*dt*alphah*Lap2D(theta2, dx, dz, in, kn)+ theta2
   B2 = 2.0*rho_ref*g/temp_ref*Grad1D(T2,dz,2, in, kn)

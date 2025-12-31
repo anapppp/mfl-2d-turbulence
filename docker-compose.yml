@@ -7,6 +7,8 @@ services:
     build:
       dockerfile: Dockerfile.pre
     container_name: preprocess
+    env_file:
+      - .env
     environment:
       CASE: ${CASE}
       INPUTS_DIR: ${INPUTS_DIR}
@@ -21,19 +23,30 @@ services:
     build:
       dockerfile: Dockerfile.mfl2d
     container_name: mfl2d
+    env_file:
+      - .env
     environment:
       CASE: ${CASE}
       INPUTS_DIR: ${INPUTS_DIR}
       RESULTS_DIR: ${RESULTS_DIR}
       LOGS_DIR: ${LOGS_DIR}
-    command: ./mfl2d ${CASE}
+      OMP_NUM_THREADS: ${OMP_NUM_THREADS}
+      OMP_PROC_BIND: ${OMP_PROC_BIND}
+      OMP_PLACES: ${OMP_PLACES}
     volumes:
       - data:/data
+    command: ./mfl2d ${CASE}
+    deploy:
+      resources:
+        limits:
+          cpus: "8.0"
 
   postprocess:
     build:
       dockerfile: Dockerfile.post
     container_name: postprocess
+    env_file:
+      - .env
     environment:
       CASE: ${CASE}
       INPUTS_DIR: ${INPUTS_DIR}
