@@ -17,8 +17,10 @@ implicit none
  real :: uCiUnif, wCiUnif, pCiUnif, TCiUnif, uCcTop, uCcSup, wCcTop, wCcSup, TCcTop, TCcSup
  integer :: i, k, n, in, kn, npt, nptprint, nptMediaFlut, MediaFlutFlag, contpt
  integer :: uCiFlag, wCiFlag, pCiFlag, TCiFlag, PontosCalcFlutX(3), PontosCalcFlutZ(3), ii, jj
- character*8  :: nomecaso, nomegrade, passotempo, uCiFile, wCiFile, pCiFile, TCiFile
- character*21 :: url
+ integer :: status
+ character*8  :: nomecaso, nomegrade, passotempo
+ character*30 :: uCiFile, wCiFile, pCiFile, TCiFile
+ character*50 :: inputs_dir, results_dir, logs_dir
 
  
  namelist / dominio / nomegrade
@@ -30,12 +32,27 @@ implicit none
  namelist / condicaocontorno / uCcTop, uCcSup, wCcTop, wCcSup, TCcTop, TCcSup
  
 
- call get_environment_variable("CASE", nomecaso)
-nomecaso = trim(nomecaso)
-url = "/data/cases/"//nomecaso//"/"
-
+ ! Obtendo variaveis de ambiente
+ 
+ call get_environment_variable("CASE", nomecaso, status=status)
+ if (status /= 0) stop "ERROR: CASE not defined"
+ 
+ call get_environment_variable("INPUTS_DIR", inputs_dir, status=status)
+ if (status /= 0) stop "ERROR: INPUTS_DIR not defined"
+ 
+ call get_environment_variable("RESULTS_DIR", results_dir, status=status)
+ if (status /= 0) stop "ERROR: RESULTS_DIR not defined"
+ 
+ call get_environment_variable("LOGS_DIR", logs_dir, status=status)
+ if (status /= 0) stop "ERROR: LOGS_DIR not defined"
+ 
+ nomecaso = trim(nomecaso)
+ inputs_dir = trim(inputs_dir)
+ results_dir = trim(results_dir)
+ logs_dir = trim(logs_dir)
+ 
  ! Lendo dados do arquivo nomecaso.cfg
- open(unit=8,  file = url//"input/"//nomecaso//".cfg", status="old", delim="apostrophe")
+ open(unit=8, file = trim(inputs_dir)//trim(nomecaso)//".cfg", status="old", delim="apostrophe")
  read(8, NML = dominio)
  read(8, NML = runconfig)
  read(8, NML = paramfisicos)
@@ -44,8 +61,9 @@ url = "/data/cases/"//nomecaso//"/"
  read(8, NML = condicaocontorno)
  close(8)
 
-! Lendo o tamanho dos arrays
- open(unit=10,  file =  url//"input/"//nomegrade//".grd", status="old")
+
+ ! Lendo o tamanho dos arrays
+ open(unit=10,  file = trim(inputs_dir)//trim(nomegrade)//".grd", status="old")
  read(10,*) in, kn 
  close(10)
  allocate( x(in), z(kn), dx(in-1), dz(kn-1) )
@@ -59,20 +77,18 @@ url = "/data/cases/"//nomecaso//"/"
  allocate( grad_p0_x(in,kn), grad_p1_x(in,kn), grad_p2_x(in,kn), grad_p0_z(in,kn), grad_p1_z(in,kn), grad_p2_z(in,kn) )
 
  ! Lendo o arquivo de grade
- call ReadGrade(url//"input/"//nomegrade//".grd", in, kn, x, z, dx, dz)
+ call ReadGrade(trim(inputs_dir)//trim(nomegrade)//".grd", in, kn, x, z, dx, dz)
 
- open(unit=9,  file = url//"log/"//nomecaso//".inf", status="unknown")
- open(unit=11, file = url//"log/"//nomecaso//".log", status="unknown")
- open(unit=13, file = url//"results/"//nomecaso//".ecin", status="unknown")
- open(unit=25, file = url//"results/"//nomecaso//".vort", status="unknown")
- open(unit=27, file = url//"results/"//nomecaso//".u.full", status="unknown")
- open(unit=29, file = url//"results/"//nomecaso//".w.full", status="unknown")
- open(unit=31, file = url//"results/"//nomecaso//".p.full", status="unknown")
- open(unit=33, file = url//"results/"//nomecaso//".t.full", status="unknown")
- open(unit=35, file = url//"results/"//nomecaso//".q.full", status="unknown")  
+ open(unit=9,  file = trim(logs_dir)//trim(nomecaso)//".inf", status="unknown")
+ open(unit=11, file = trim(logs_dir)//trim(nomecaso)//".log", status="unknown")
+ open(unit=13, file = trim(results_dir)//trim(nomecaso)//".ecin", status="unknown")
+ open(unit=25, file = trim(results_dir)//trim(nomecaso)//".vort", status="unknown")
+ open(unit=27, file = trim(results_dir)//trim(nomecaso)//".u.full", status="unknown")
+ open(unit=29, file = trim(results_dir)//trim(nomecaso)//".w.full", status="unknown")
+ open(unit=31, file = trim(results_dir)//trim(nomecaso)//".p.full", status="unknown")
+ open(unit=33, file = trim(results_dir)//trim(nomecaso)//".t.full", status="unknown")
+ open(unit=35, file = trim(results_dir)//trim(nomecaso)//".q.full", status="unknown")  
 
-
- 
  
 ! Define Condicao Inicial
  if (uCiFlag == 0) then 
@@ -86,14 +102,20 @@ url = "/data/cases/"//nomecaso//"/"
      u0 = uCiUnif
    endif
  endif  
+ 
+ uCiFile = trim(uCiFile)
+ wCiFile = trim(wCiFile)
+ pCiFile = trim(pCiFile)
+ TCiFile = trim(TCiFile)
 
- if (uCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(uCiFile), u0, in, kn)
+
+ if (uCiFlag == 1) call ReadCampo2D(trim(inputs_dir)//trim(uCiFile), u0, in, kn)
  if (wCiFlag == 0) w0 = wCiUnif
- if (wCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(wCiFile), w0, in, kn)
+ if (wCiFlag == 1) call ReadCampo2D(trim(inputs_dir)//trim(wCiFile), w0, in, kn)
  if (pCiFlag == 0) p0 = pCiUnif
- if (pCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(pCiFile), p0, in, kn)
+ if (pCiFlag == 1) call ReadCampo2D(trim(inputs_dir)//trim(pCiFile), p0, in, kn)
  if (TCiFlag == 0) T2 = TCiUnif
- if (TCiFlag == 1) call ReadCampo2D(url//"input/"//nomecaso//trim(TCiFile), T2, in, kn)
+ if (TCiFlag == 1) call ReadCampo2D(trim(inputs_dir)//trim(TCiFile), T2, in, kn)
  
 
 ! Arquivo nomecaso.inf
@@ -197,37 +219,37 @@ url = "/data/cases/"//nomecaso//"/"
  endif
 
  if (MediaFlutFlag == 1) then
-   call system("cp "//url//"results/"//nomecaso//".u.med ./mediaarq") 
+   call system("cp "//trim(results_dir)//trim(nomecaso)//".u.med ./mediaarq") 
    call ReadCampo2D('mediaarq', umed, in, kn)
-   call system("cp "//url//"results/"//nomecaso//".w.med ./mediaarq")
+   call system("cp "//trim(results_dir)//trim(nomecaso)//".w.med ./mediaarq")
    call ReadCampo2D('mediaarq', wmed, in, kn)
-   call system("cp "//url//"results/"//nomecaso//".p.med ./mediaarq")
+   call system("cp "//trim(results_dir)//trim(nomecaso)//".p.med ./mediaarq")
    call ReadCampo2D('mediaarq', pmed, in, kn)
-   call system("cp "//url//"results/"//nomecaso//".t.med ./mediaarq")
+   call system("cp "//trim(results_dir)//trim(nomecaso)//".t.med ./mediaarq")
    call ReadCampo2D('mediaarq', Tmed, in, kn)
-   call system("cp "//url//"results/"//nomecaso//".q.med ./mediaarq")
+   call system("cp "//trim(results_dir)//trim(nomecaso)//".q.med ./mediaarq")
    call ReadCampo2D('mediaarq', thetamed, in, kn)
    call system("rm mediaarq")
 
-   open(unit=15, file = url//"results/"//nomecaso//".u.flu", status="unknown")
-   open(unit=17, file = url//"results/"//nomecaso//".w.flu", status="unknown")
-   open(unit=19, file = url//"results/"//nomecaso//".p.flu", status="unknown")
-   open(unit=21, file = url//"results/"//nomecaso//".t.flu", status="unknown")
-   open(unit=23, file = url//"results/"//nomecaso//".q.flu", status="unknown")  
+   open(unit=15, file = trim(results_dir)//trim(nomecaso)//".u.flu", status="unknown")
+   open(unit=17, file = trim(results_dir)//trim(nomecaso)//".w.flu", status="unknown")
+   open(unit=19, file = trim(results_dir)//trim(nomecaso)//".p.flu", status="unknown")
+   open(unit=21, file = trim(results_dir)//trim(nomecaso)//".t.flu", status="unknown")
+   open(unit=23, file = trim(results_dir)//trim(nomecaso)//".q.flu", status="unknown")  
  endif
 
 
 write(passotempo,*) '0'
 
-call printResultCampo2D(u0, x, z, url//"results/"//nomecaso//'.u.'//trim(passotempo))
-call printResultCampo2D(w0, x, z, url//"results/"//nomecaso//'.w.'//trim(passotempo))
-call printResultCampo2D(p0, x, z, url//"results/"//nomecaso//'.p.'//trim(passotempo))
-call printResultCampo2D(theta0, x, z, url//"results/"//nomecaso//'.q.'//trim(passotempo))
-call printResultCampo2D(T2, x, z, url//"results/"//nomecaso//'.t.'//trim(passotempo))
+call printResultCampo2D(u0, x, z, trim(results_dir)//trim(nomecaso)//'.u.'//trim(passotempo))
+call printResultCampo2D(w0, x, z, trim(results_dir)//trim(nomecaso)//'.w.'//trim(passotempo))
+call printResultCampo2D(p0, x, z, trim(results_dir)//trim(nomecaso)//'.p.'//trim(passotempo))
+call printResultCampo2D(theta0, x, z, trim(results_dir)//trim(nomecaso)//'.q.'//trim(passotempo))
+call printResultCampo2D(T2, x, z, trim(results_dir)//trim(nomecaso)//'.t.'//trim(passotempo))
+
 !-------------------------------------------------------------------------!
 ! Inicio da previsao
 !-------------------------------------------------------------------------!
-
 
 
 write(*,*) 'Simulacao: ', nomecaso
@@ -361,12 +383,12 @@ do n = 1, npt
     write(*,*)  'n=',n,'Tempo(s) = ',n*dt 
     write(passotempo,'(i8)') n
     write(11,*) 'n=',n,'Tempo(s) = ',n*dt
-   
-    call printResultCampo2D(u2, x, z, url//"results/"//nomecaso//'.u.'//passotempo)
-    call printResultCampo2D(w2, x, z, url//"results/"//nomecaso//'.w.'//passotempo)
-    call printResultCampo2D(p2, x, z, url//"results/"//nomecaso//'.p.'//passotempo)
-    call printResultCampo2D(theta2, x, z, url//"results/"//nomecaso//'.q.'//passotempo)
-    call printResultCampo2D(T2, x, z, url//"results/"//nomecaso//'.t.'//passotempo)
+
+    call printResultCampo2D(u2, x, z, trim(results_dir)//trim(nomecaso)//'.u.'//trim(passotempo))
+    call printResultCampo2D(w2, x, z, trim(results_dir)//trim(nomecaso)//'.w.'//trim(passotempo))
+    call printResultCampo2D(p2, x, z, trim(results_dir)//trim(nomecaso)//'.p.'//trim(passotempo))
+    call printResultCampo2D(theta2, x, z, trim(results_dir)//trim(nomecaso)//'.q.'//trim(passotempo))
+    call printResultCampo2D(T2, x, z, trim(results_dir)//trim(nomecaso)//'.t.'//trim(passotempo))
     contpt = 0
     
   endif
@@ -414,11 +436,11 @@ if (MediaFlutFlag == 0) then
   thetamed = thetamed/nptMediaFlut
 
   write(passotempo,'(a)') 'med'
-  call printResultCampo2D(umed, x, z, url//"results/"//nomecaso//'.u.'//passotempo)
-  call printResultCampo2D(wmed, x, z, url//"results/"//nomecaso//'.w.'//passotempo)
-  call printResultCampo2D(pmed, x, z, url//"results/"//nomecaso//'.p.'//passotempo)
-  call printResultCampo2D(Tmed, x, z, url//"results/"//nomecaso//'.t.'//passotempo)
-  call printResultCampo2D(thetamed, x, z, url//"results/"//nomecaso//'.q.'//passotempo)
+  call printResultCampo2D(umed, x, z, trim(results_dir)//trim(nomecaso)//'.u.'//trim(passotempo))
+  call printResultCampo2D(wmed, x, z, trim(results_dir)//trim(nomecaso)//'.w.'//trim(passotempo))
+  call printResultCampo2D(pmed, x, z, trim(results_dir)//trim(nomecaso)//'.p.'//trim(passotempo))
+  call printResultCampo2D(Tmed, x, z, trim(results_dir)//trim(nomecaso)//'.t.'//trim(passotempo))
+  call printResultCampo2D(thetamed, x, z, trim(results_dir)//trim(nomecaso)//'.q.'//trim(passotempo))
 endif
 
 

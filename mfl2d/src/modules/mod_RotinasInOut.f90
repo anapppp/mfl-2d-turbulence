@@ -30,10 +30,10 @@ subroutine printResultCampo2D(var, vetx, vetz, file)
 
 
 real :: var(:,:), vetx(:), vetz(:)
-character*50 :: file
+character(len=*) :: file
 integer :: i, k
 
-open(unit=18, file = file, status="unknown") 
+open(unit=18, file = trim(file), status="unknown") 
 
 write(18,*) vetx
 write(18,*) vetz
@@ -48,14 +48,12 @@ end subroutine printResultCampo2D
 
 subroutine ReadGrade(file, in, kn, x, z, dx, dz)
 ! Le o arquivo de grade e retorna vetores x, z, dx, e dz
-
   
-  real, dimension(:) :: x, z, dx, dz
-  integer :: i, k, in, kn
-  character*39  :: file
+real, dimension(:) :: x, z, dx, dz
+integer :: i, k, in, kn
+character(len=*) :: file
 
-
-open(unit=18,  file = trim(file), status="old")
+open(unit=18,  file=trim(file), status="old")
 
 read(18,*)
 
@@ -91,9 +89,9 @@ subroutine ReadCampo2D(file, var, in, kn)
 
 real :: var(:,:)
 integer :: i, k, in, kn
-character*40  :: file
+character(len=*) :: file
 
-open(unit=18,  file = trim(file))
+open(unit=18,  file = trim(file), status="old")
 
 read(18,*)
 read(18,*)
@@ -123,13 +121,10 @@ subroutine printResultPerfilMedio(var, vetz, file, variavel)
 
 
 real :: var(:), vetz(:)
-character*21 :: file
-character :: variavel
+character(len=*) :: file, variavel
 integer :: k
 
-file = trim(file)
-
-open(unit=18, file = file//"."//variavel//".med", status="unknown") 
+open(unit=18, file = trim(file)//"."//trim(variavel)//".med", status="unknown") 
 
 do k=1,size(vetz)
   write(18,*) vetz(k),var(k)
