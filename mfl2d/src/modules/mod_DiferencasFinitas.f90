@@ -416,7 +416,7 @@ integer :: i, j, in, jn
 
 Lap2D = 0.0
 
-
+!$omp parallel do private(ax, ay)
 do i = 2, in-1
   ax = 2.0/(vdx(i)*vdx(i-1)*(vdx(i)+vdx(i-1)))
   do j = 2, jn-1
@@ -427,6 +427,8 @@ do i = 2, in-1
 
   enddo
 enddo
+!$omp end parallel do
+
 
 return
 end function Lap2D
@@ -448,7 +450,7 @@ Grad1D = 0.0
 
 if (dimFlag==1) then  !deriva em relacao a x
 allocate(f(in))  
-  
+  !$omp parallel do private(f)
   do j = 1, jn
     f = g(:,j)
     
@@ -458,12 +460,13 @@ allocate(f(in))
                     ( vdelta(i)*vdelta(i-1)*(vdelta(i)+vdelta(i-1)) )
     enddo
   enddo
-  
+  !$omp end parallel do
+
 endif
 
 if (dimFlag==2) then  !deriva em relacao a y
 allocate(f(jn))  
-  
+  !$omp parallel do private(f)
   do i = 1, in
     f = g(i,:)
     
@@ -473,6 +476,8 @@ allocate(f(jn))
                     ( vdelta(j)*vdelta(j-1)*(vdelta(j)+vdelta(j-1)) )
     enddo
   enddo
+  !$omp end parallel do
+
 endif
 
 return
