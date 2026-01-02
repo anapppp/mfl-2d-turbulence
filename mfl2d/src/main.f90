@@ -258,21 +258,19 @@ write(*,*) 'Simulacao: ', nomecaso
 write(*,*) 'Grade: ', nomegrade
 write(*,*) 'INICIO DA PREVISAO'
 
- contpt = 0
+contpt = 0
  
 do n = 1, npt
 
  contpt = contpt + 1
 
- !$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
+  !$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
   do i = 2, in
    do k = 2, kn-1
 
 !     Calculando o Ponto de Partida 
       ptoPartida0 = CalculaPontoDePartida2P3NT(i, k, x, z, dx, dz, u1, w1, dt, 0)
       ptoPartida1 = CalculaPontoDePartida2P3NT(i, k, x, z, dx, dz, u1, w1, dt, 1)
-!      ptoPartida0 = CalculaPontoDePartida3NTRobert(i, k, x, z, dx, dz, u1, w1, dt, 0)
-!      ptoPartida1 = CalculaPontoDePartida3NTRobert(i, k, x, z, dx, dz, u1, w1, dt, 1)
 
 !     Calculando a Temperatura Potencial
       theta2(i,k) = ValorNoPontoDePartida(A0, x, z, dx, dz, ptoPartida0, i, k)
@@ -283,27 +281,22 @@ do n = 1, npt
 
    enddo !k
   enddo !i
- !$omp end parallel do
+  !$omp end parallel do
 
    
 ! Calculando o campo de Pressão 
-!  call EDP2GaussSeidel(p2, lap_p2, dx, dz, in, kn)
-!  call EDP2GaussSeidelGradeUniforme(p2,lap_p2, dx(1), dz(1), in, kn)
   call EDP2GaussSeidel_Xadrez(p2, lap_p2, dx, dz, in, kn)
-
 
 ! Calculando os gradientes de Pressão 
   grad_p2_x = Grad1D(p2,dx,1, in, kn)
   grad_p2_z = Grad1D(p2,dz,2, in, kn)
 
-!$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
+  !$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
   do i = 2, in-1
    do k = 2, kn-1 
   !     Calculando o Ponto de Partida 
       ptoPartida0 = CalculaPontoDePartida2P3NT(i, k, x, z, dx, dz, u1, w1, dt, 0)  
       ptoPartida1 = CalculaPontoDePartida2P3NT(i, k, x, z, dx, dz, u1, w1, dt, 1)
-!      ptoPartida0 = CalculaPontoDePartida3NTRobert(i, k, x, z, dx, dz, u1, w1, dt, 0)
-!      ptoPartida1 = CalculaPontoDePartida3NTRobert(i, k, x, z, dx, dz, u1, w1, dt, 1)
       
 !     Calculando as componentes u e w da velocidade
       u2(i,k) = -dt/rho_ref*grad_p2_x(i,k) + ValorNoPontoDePartida(D0, x, z, dx, dz, ptoPartida0, i, k)
@@ -312,7 +305,7 @@ do n = 1, npt
                 
      enddo !k
   enddo !i
-!$omp end parallel do
+  !$omp end parallel do
 
 
 ! Calculando a velocidade vertical no topo
@@ -334,7 +327,7 @@ do n = 1, npt
   EnCineticaMedia = 0.0
   Vorticidade = 0.0
 
-!$omp parallel do collapse(2) reduction(+:EnCineticaMedia, Vorticidade) private(dwdx, dudz)
+  !$omp parallel do collapse(2) reduction(+:EnCineticaMedia, Vorticidade) private(dwdx, dudz)
   do i = 2, in-1
     do k = 2, kn-1   
       T2(i,k) = theta2(i,k) - temp_ref - gamma*z(k)
