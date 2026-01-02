@@ -200,11 +200,7 @@ do
       f(i,j) = omega*f(i,j) + (1-omega)*fold(i,j)
          
       erro = abs(f(i,j)-fold(i,j))
-      if (erromax < erro) then
-        erromax = erro
-        ierrmax = i
-        jerrmax = j
-      endif
+      erromax = max(erromax, erro)
     
     enddo !j
   enddo !i
@@ -224,12 +220,8 @@ do
       f(i,j) = omega*f(i,j) + (1-omega)*fold(i,j)
          
       erro = abs(f(i,j)-fold(i,j))
-      if (erromax < erro) then
-        erromax = erro
-        ierrmax = i
-        jerrmax = j
-      endif
-    
+      erromax = max(erromax, erro)
+ 
     enddo !j
   enddo !i
   fold = f 
@@ -248,17 +240,13 @@ do
       f(i,j) = omega*f(i,j) + (1-omega)*fold(i,j)
          
       erro = abs(f(i,j)-fold(i,j))
-      if (erromax < erro) then
-        erromax = erro
-        ierrmax = i
-        jerrmax = j
-      endif
+      erromax = max(erromax, erro)
     
     enddo !j
   enddo !i
   fold = f 
 
-!4
+
  
   do i=3,in-1,2
     do j=3,jn-1,2     
@@ -274,11 +262,7 @@ do
       f(i,j) = omega*f(i,j) + (1-omega)*fold(i,j)
          
       erro = abs(f(i,j)-fold(i,j))
-      if (erromax < erro) then
-        erromax = erro
-        ierrmax = i
-        jerrmax = j
-      endif
+      erromax = max(erromax, erro)
     
     enddo !j
   enddo !i
