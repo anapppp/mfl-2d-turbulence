@@ -186,6 +186,8 @@ do
   cont = cont+1
   erromax = 0.0 
 
+  !$omp parallel do collapse(2) private(Ax,Ay,B,erro) &
+  !$omp reduction(max:erromax) schedule(static)
   do i=2,in-1,2
     do j=2,jn-1,2     
             
@@ -204,8 +206,12 @@ do
     
     enddo !j
   enddo !i
+  !$omp end parallel do
+
   fold = f 
 
+  !$omp parallel do collapse(2) private(Ax,Ay,B,erro) &
+  !$omp reduction(max:erromax) schedule(static)
   do i=3,in-1,2
     do j=2,jn-1,2     
       
@@ -224,8 +230,12 @@ do
  
     enddo !j
   enddo !i
+  !$omp end parallel do
+
   fold = f 
 
+  !$omp parallel do collapse(2) private(Ax,Ay,B,erro) &
+  !$omp reduction(max:erromax) schedule(static)
   do i=2,in-1,2
     do j=3,jn-1,2  
      
@@ -244,10 +254,12 @@ do
     
     enddo !j
   enddo !i
+  !$omp end parallel do
+
   fold = f 
 
-
- 
+  !$omp parallel do collapse(2) private(Ax,Ay,B,erro) &
+  !$omp reduction(max:erromax) schedule(static) 
   do i=3,in-1,2
     do j=3,jn-1,2     
       
@@ -266,11 +278,11 @@ do
     
     enddo !j
   enddo !i
+  !$omp end parallel do
+
   fold = f 
 
-
   erromax = erromax/maxval(maxval(abs(f),2))
-
   if (erromax <= errolim) exit  
   
   if (cont >= 70000) then
