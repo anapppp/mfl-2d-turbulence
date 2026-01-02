@@ -22,11 +22,11 @@ from class_Label import *
 -------------------------------------------------------------------------
 """
 
-filename = sys.argv[1]
+nomesim = sys.argv[1]
 xplot = float(sys.argv[2])
+passotempo = sys.argv[3]
 
-# Lendo arquivo
-filename = './Resultados/' + filename
+filename = './cases/' + nomesim + '/results/' + nomesim + '.u.' + passotempo
 
 nomesim, nomelabel, nomevar, passotempo = Labels(filename)
 
@@ -67,11 +67,10 @@ f = [ (i-U1)/U0  for i in u]
 eta = [ i/delta  for i in y]
 
 
-print 'xplot: ', xplot
-print 'U1: ', U1
-print 'U0: ', U0
-print 'delta: ', delta
-
+print ('xplot: ', xplot)
+print ('U1: ', U1)
+print ('U0: ', U0)
+print ('delta: ', delta)
 
 # Valores medidos Gordeyev S. V., Thomas F. O. Coherent structure in the turbulent planar jet. Journal of Fluid Mechanics, 2002.
 medicoes = [[-1.8743009689, -1.8322969645, -1.7798172738, -1.7273375831,  -1.6696108439, -1.6329091202, -1.5699445378, -1.5174832578, -1.4545647021, 

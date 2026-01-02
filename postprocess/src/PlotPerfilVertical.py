@@ -25,13 +25,13 @@ from class_Label import *
 # Lendo arquivo
 
 nomesim = sys.argv[1]
-filename = './cases/' + nomesim + '/results/' + nomesim + '.u.150000'
+xplot = float(sys.argv[2])
+passotempo = sys.argv[3]
+
+filename = './cases/' + nomesim + '/results/' + nomesim + '.u.' + passotempo
 
 X, Y, Z = LerArquivoPadrao(filename)
 nomesim, nomelabel, nomevar, passotempo = Labels(filename)
-
-xplot = float(sys.argv[2])
-
 
 # Encontrando ponto x mais proximo de xplot
 
@@ -47,7 +47,6 @@ for i in range(len(listdelta)):
 # Plotando
 
 fig = plt.figure()
-# plt.title(nomesim+ '\n' +nomevar+ '\n' +'n='+passotempo+'   x='+xplot)
 plt.title('x='+xplot + 'm')
 
 plt.ylabel('z(m)')

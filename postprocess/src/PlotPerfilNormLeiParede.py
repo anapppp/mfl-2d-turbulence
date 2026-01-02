@@ -22,18 +22,22 @@ from class_Label import *
 -------------------------------------------------------------------------
 """
 
-filename = sys.argv[1]
-mi = float(sys.argv[2])
-rho = float(sys.argv[3])
 
 # Lendo arquivo
-filename = './Resultados/' + filename
+nomesim = sys.argv[1]
+xplot = float(sys.argv[2])
+passotempo = sys.argv[3]
 
+filename = './cases/' + nomesim + '/results/' + nomesim + '.u.' + passotempo
 nomesim, nomelabel, nomevar, passotempo = Labels(filename)
 
-X,Y,Z = LerArquivoPadrao(filename)
-y = Y[:,-2]
-u = Z[:,25]
+X, Y, Z = LerArquivoPadrao(filename)
+
+mi = 1.817E-05
+rho = 1.188
+
+y = Y[:, -2]
+u = Z[:, 25]
 
 
 # Calculando tensao na superficie - tauzero = du/dy em y=0
@@ -49,20 +53,21 @@ uestrela = sqrt(tauzero/rho)
 unorm = [i/uestrela for i in u]
 ymais = [i*uestrela/nu for i in y]
 
-print 'tau_0: ', tauzero
-print 'u*: ', uestrela
-print 'escala viscosa (nu/u*):', nu/uestrela
+print('tau_0: ', tauzero)
+print('u*: ', uestrela)
+print('escala viscosa (nu/u*):', nu/uestrela)
 
-# Plotando 
+# Plotando
 fig = plt.figure()
 
 plt.xscale('log')
 
-plt.plot(ymais,unorm, label='Simulado')
-ymaisteorico = range(0,15)
+plt.plot(ymais, unorm, label='Simulado')
+ymaisteorico = range(0, 15)
 plt.plot(ymaisteorico, ymaisteorico, color='k', label='U/u*=y+')
-ymaisteorico = range(7,10000)
-plt.plot(ymaisteorico, [2.5*log(i)+5  for i in ymaisteorico], color='k', label='U/u*=2,5ln(y+)+5')
+ymaisteorico = range(7, 10000)
+plt.plot(ymaisteorico, [2.5*log(i)+5 for i in ymaisteorico],
+         color='k', label='U/u*=2,5ln(y+)+5')
 
 plt.title(nomesim)
 plt.ylabel('U/u*')

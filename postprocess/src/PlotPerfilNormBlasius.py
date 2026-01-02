@@ -47,7 +47,7 @@ delta = sqrt(mi*L/rho/U)
 eta = [i/delta for i in y]
 unorm = [i/U for i in u]
 
-print 'delta_99:', 4.9*delta
+print ('delta_99:', 4.9*delta)
 
 
 # Valores Teoricos

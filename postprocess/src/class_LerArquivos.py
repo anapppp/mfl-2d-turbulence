@@ -64,7 +64,7 @@ def LerArquivoGrade(filename):
 
     [tamx, tamy] = map(int, (filedata.readline()).split())
 
-    vetor = map(float, filedata.readlines())
+    vetor = list(map(float, filedata.readlines()))
 
     x = vetor[:tamx]
     y = vetor[tamx:]
@@ -74,38 +74,6 @@ def LerArquivoGrade(filename):
     filedata.close()
 
     return X, Y
-
-
-def oldLerEspectro(filename):
-    # Le saida do espectro
-
-    filedata = open(filename)
-
-    m = []
-    m2 = []
-
-    n = []
-    omega = []
-    frequencia = []
-    periodo = []
-    espectro = []
-
-    m = filedata.readlines()
-
-    for i in m:
-        m2.append(map(float, i.split()))
-
-    m2 = zip(*m2)
-
-    n = list(m2[0])
-    omega = list(m2[1])
-    frequencia = list(m2[2])
-    periodo = list(m2[3])
-    espectro = list(m2[4])
-
-    filedata.close()
-
-    return n, omega, frequencia, periodo, espectro
 
 
 def LerFlutuacoes(filename):

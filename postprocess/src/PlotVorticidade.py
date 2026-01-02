@@ -23,23 +23,24 @@ from class_Label import *
 
 # Lendo arquivo
 
+
 nomesim = sys.argv[1]
-filename = './Resultados/' + nomesim + '.vort'
+filename = './cases/' + nomesim + '/results/' + nomesim + '.ecin'
 
 filedata = open(filename, 'r')
 dadosarq = filedata.readlines()
 
+
 tempo = []
 vorticidade = []
 for line in dadosarq:
-  a = map(float, line.split())
-  tempo.append(a[0])
-  vorticidade.append(a[1])
+    t, v = map(float, line.split())
+    tempo.append(t)
+    vorticidade.append(v)
 
-# Plotando 
+# Plotando
 
 fig = plt.figure()
-#plt.title(nomesim+ '\n' + 'Vorticidade')
 plt.xlabel('t(s)')
 plt.ylabel('Vorticidade ($s^{-1}$)')
 

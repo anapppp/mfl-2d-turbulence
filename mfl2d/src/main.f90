@@ -265,7 +265,7 @@ do n = 1, npt
  contpt = contpt + 1
 
  !$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
-  do i = 2, in-1
+  do i = 2, in
    do k = 2, kn-1
 
 !     Calculando o Ponto de Partida 
@@ -319,9 +319,8 @@ do n = 1, npt
  if (wCcTop <= -9999.9) w2(:,kn) = 1.5*w1(:,kn-1) - 0.5*w1(:,kn-3)
  if (wCcSup <= -9999.9) w2(:,1)  = 1.5*w1(:,2)    - 0.5*w1(:,4)
 
- u2(in,:) = 1.5*u1(in-1,:) - 0.5*u1(in-3,:)
-
 ! Calculando a velocidades u e w na saída - condição não-reflexiva
+!  u2(in,:) = 1.5*u1(in-1,:) - 0.5*u1(in-3,:)
   call CondicaoSaida(u2, u1, u0, w2, w1, w0, p2, p1, theta2, theta1, &
                         dx, dz, dt, in, kn)
 
@@ -332,7 +331,6 @@ do n = 1, npt
   lap_w2(:,1) = 0.0   
 
 ! Calculando o desvio do estado de referencia da temperatura, a pressao total, a energia cinetica e a vorticidade medias
-
   EnCineticaMedia = 0.0
   Vorticidade = 0.0
 

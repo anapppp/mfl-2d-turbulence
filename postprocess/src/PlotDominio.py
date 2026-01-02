@@ -24,17 +24,19 @@ deve estar no diretorio principal.
 
 # Lendo arquivo
 
-filename = sys.argv[1]
-filename = filename + '.grd'
-X,Y = LerArquivoGrade(filename)
+nomesim = sys.argv[1]
+nomegrd = sys.argv[2]
+filename = './cases/' + nomesim + '/inputs/' + nomegrd + '.grd'
+
+X, Y = LerArquivoGrade(filename)
 
 
-# Plotando 
+# Plotando
 
 minx = min(X[0])
-maxx = max(X[0])	
-miny = min(Y[:,0])
-maxy = max(Y[:,0])
+maxx = max(X[0])
+miny = min(Y[:, 0])
+maxy = max(Y[:, 0])
 
 # Numero de linhas e colunas para pular
 nlcpx = 1
@@ -45,6 +47,7 @@ fig.gca().set_aspect('equal')
 plt.axis([minx, maxx, miny, maxy])
 plt.title(filename)
 
-plt.plot(X[::nlcpy,::nlcpx],Y[::nlcpy,::nlcpx],'ro', color='k',  markersize=1 )
+plt.plot(X[::nlcpy, ::nlcpx], Y[::nlcpy, ::nlcpx],
+         'ro', color='k',  markersize=1)
 
 plt.show()
