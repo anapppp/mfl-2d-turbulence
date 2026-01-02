@@ -8,7 +8,7 @@ implicit none
 contains
 
 !-------------------------------------------------------------------------
-! VELOCIDADE VERTICAL NO TOPO - Várias opções
+! VELOCIDADE VERTICAL NO TOPO
 !-------------------------------------------------------------------------
 
 subroutine VelocidadeVerticalTopo(w2, w1, w0, u2, u1, dx, dz, dt,in, kn)

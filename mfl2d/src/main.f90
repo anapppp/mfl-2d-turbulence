@@ -1,9 +1,10 @@
 program mfl2dTurbulence
 
-
 use PontoDePartida
 use DiferencasFinitas
 use RotinasInOut
+use CondicoesContorno
+
 implicit none
  
  real, allocatable, dimension(:,:) :: u0, u1, u2, w0, w1, w2, p0, p1, p2, theta0, theta1, theta2, T2
@@ -264,7 +265,7 @@ do n = 1, npt
  contpt = contpt + 1
 
  !$omp parallel do collapse(2) private(ptoPartida0, ptoPartida1)
-  do i = 2, in
+  do i = 2, in-1
    do k = 2, kn-1
 
 !     Calculando o Ponto de Partida 
@@ -319,7 +320,11 @@ do n = 1, npt
  if (wCcSup <= -9999.9) w2(:,1)  = 1.5*w1(:,2)    - 0.5*w1(:,4)
 
  u2(in,:) = 1.5*u1(in-1,:) - 0.5*u1(in-3,:)
-  
+
+! Calculando a velocidades u e w na saída - condição não-reflexiva
+  call CondicaoSaida(u2, u1, u0, w2, w1, w0, p2, p1, theta2, theta1, &
+                        dx, dz, dt, in, kn)
+
 ! Calculando o Laplaciano da velocidade
   lap_u2 = Lap2D(u2, dx, dz, in, kn)
   lap_u2(:,1) = grad_p2_x(:,1)/mi
@@ -391,8 +396,8 @@ do n = 1, npt
 
   if (contpt == nptprint) then
   
-    write(*,*)  'n=',n,'Tempo(s) = ',n*dt 
-    write(passotempo,'(i8)') n
+    write(*,*)  'n=',n,'Tempo(s) = ',n*dt
+    write(passotempo,'(I8.8)') n
     write(11,*) 'n=',n,'Tempo(s) = ',n*dt
 
     call printResultCampo2D(u2, x, z, trim(results_dir)//trim(nomecaso)//'.u.'//trim(passotempo))
