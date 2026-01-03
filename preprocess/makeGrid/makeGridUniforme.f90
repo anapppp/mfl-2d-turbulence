@@ -1,4 +1,4 @@
-﻿program MakeGrid
+﻿program MakeGridUniforme
 !-------------------------------------------------------------------------!
 !-------------------------------------------------------------------------!
 ! Ana Paula Kelm Soares
@@ -44,13 +44,13 @@
 ! y(jn)
 !
 !-------------------------------------------------------------------------!
-!  MakeGrid_v2.1: grade log em y e uniforme em x
+!  MakeGrid_v0.1: Cria uma grade uniforme
 !-------------------------------------------------------------------------!
 !
 implicit none
 real, allocatable, dimension(:) :: x, y
 integer :: i, j, in, jn
-real :: x0, y0, xn, yn, dx, dy, dyb, dyt, a, b, h
+real :: x0, y0, xn, yn, dx, dy
 character*8 :: nomegrad
 !
 !
@@ -67,7 +67,7 @@ character*8 :: nomegrad
 !
 !
 ! Nome da Grade
-nomegrad = "grdLog08"
+nomegrad = "grade001"
 !
 !
 open(unit=7, file="./"//nomegrad//".grd", status="unknown")
@@ -75,44 +75,32 @@ open(unit=7, file="./"//nomegrad//".grd", status="unknown")
 !
 ! Delimitacao do dominio e do espacamento de grade
 x0 = 0.0                 !m
-xn = 2000.0              !m      
+xn = 5.0                 !m      
 y0 = 0.0                 !m   
-yn = 30.0                !m   
-dx = 40.0                !m   
-dyb = 0.05               !m
-dyt = 0.5                !m
+yn = 0.16*1.3            !m   
+dx = 0.2                 !m   
+dy = 0.002               !m
 !
 !
 !Calcula in e jn, onde i=1,...,in e j=1,...,jn
 ! i ==> coordenada x
 ! j ==> coordenada y
 !
- in = int((xn-x0)/dx)
- jn = int((yn-y0)/dyb)
+ in = int((xn-x0)/dx)+2
+ jn = int((yn-y0)/dy)+2
 !
 ! Aloca arrays
 allocate(x(1:in), y(1:jn))
 !
 !
-! Cria a grade
+! Cria uma grade uniforme
 do i = 1,in
-   x(i) = (i-1)*dx + x0
+   x(i) = (i-1)*dx+x0
 enddo
 !
-
-h = yn-y0
-y(1) = y0
-dy = dyb
-do j = 2,int((yn-y0)/dyb)
-   y(j) = y(j-1) + dy
-
-   b = (dyb - dyt)/log(dyb/h)
-   a = dyb-b*log(dyb)
-   dy = a+b*log(y(j))
-   
-   if (y(j)>=yn) exit
+do j = 1,jn
+   y(j) = (j-1)*dy+y0
 enddo
-jn = j
 !
 !
 ! Escreve arquivo de grade
@@ -128,4 +116,4 @@ enddo
 
 
 close(7)
-end program MakeGrid
+end program MakeGridUniforme

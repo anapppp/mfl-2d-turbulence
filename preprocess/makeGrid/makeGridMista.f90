@@ -1,4 +1,4 @@
-﻿program MakeGrid
+﻿program MakeGridMista
 !-------------------------------------------------------------------------!
 !-------------------------------------------------------------------------!
 ! Ana Paula Kelm Soares
@@ -161,4 +161,4 @@ enddo
 
 
 close(7)
-end program MakeGrid
+end program MakeGridMista

@@ -14,10 +14,17 @@ services:
       INPUTS_DIR: ${INPUTS_DIR}
       RESULTS_DIR: ${RESULTS_DIR}
       LOGS_DIR: ${LOGS_DIR}
+      MAKE_GRID: ${MAKE_GRID}
+      GRID_NAME: ${GRID_NAME}
+      GRID_TYPE: ${GRID_TYPE}
     volumes:
       - data:/data
     command: >
-      sh -c "mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} && cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR}"
+      sh -c " mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} &&  cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR} &&  if [ '${MAKE_GRID}' = 'true' ]; then
+        if [ '${GRID_TYPE}' = 'log' ]; then
+          ./makeGridLog.exe;
+        fi 
+      fi"
 
   mfl2d:
     build:
