@@ -20,7 +20,7 @@ def Labels(filename):
     passoTempo = filename[2]
 
     if parametro == 'q':
-        nomeLabel = '$\Theta$(K)'
+        nomeLabel = '$\\Theta$(K)'
         nomeVariavel = 'Temperatura Potencial (K)'
     elif parametro == 't':
         nomeLabel = 'T2(K)'

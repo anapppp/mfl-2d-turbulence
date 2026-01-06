@@ -312,10 +312,10 @@ do n = 1, npt
  if (wCcTop <= -9999.9) w2(:,kn) = 1.5*w1(:,kn-1) - 0.5*w1(:,kn-3)
  if (wCcSup <= -9999.9) w2(:,1)  = 1.5*w1(:,2)    - 0.5*w1(:,4)
 
-! Calculando a velocidades u e w na saída - condição não-reflexiva
-!  u2(in,:) = 1.5*u1(in-1,:) - 0.5*u1(in-3,:)
-  call CondicaoSaida(u2, u1, u0, w2, w1, w0, p2, p1, theta2, theta1, &
-                        dx, dz, dt, in, kn)
+ u2(in,:) = 1.5*u1(in-1,:) - 0.5*u1(in-3,:)
+ ! Calculando a velocidades u e w na saída - condição não-reflexiva
+  ! call CondicaoSaida(u2, u1, u0, w2, w1, w0, p2, p1, theta2, theta1, &
+  !                       dx, dz, dt, in, kn)
 
 ! Calculando o Laplaciano da velocidade
   lap_u2 = Lap2D(u2, dx, dz, in, kn)

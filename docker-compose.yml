@@ -6,7 +6,7 @@ services:
   preprocess:
     build:
       dockerfile: Dockerfile.pre
-    container_name: preprocess
+    container_name: preprocess-${CASE}
     env_file:
       - .env
     environment:
@@ -20,7 +20,7 @@ services:
     volumes:
       - data:/data
     command: >
-      sh -c " mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} &&  cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR} &&  if [ '${MAKE_GRID}' = 'true' ]; then
+      sh -c "  rm -rf ${LOGS_DIR} ${RESULTS_DIR} && mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} &&  cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR} &&  if [ '${MAKE_GRID}' = 'true' ]; then
         if [ '${GRID_TYPE}' = 'log' ]; then
           ./makeGridLog.exe;
         fi 
@@ -29,7 +29,7 @@ services:
   mfl2d:
     build:
       dockerfile: Dockerfile.mfl2d
-    container_name: mfl2d
+    container_name: mfl2d-${CASE}
     env_file:
       - .env
     environment:

@@ -92,7 +92,7 @@ docker run --rm mfl-simulation python3 seu_script.py
 docker compose up --build
 ```
 
-### Limpa e cria o container -> Melhor dos melhores
+### Limpa e cria o container
 
 ``` 
 docker compose down -v
@@ -128,8 +128,32 @@ Idem imagens e volumes
 docker exec -it postprocess /bin/bash
 ```
 
+## Pós-processamento
+
+
 ### Copia o resultados do volume do container para o local
 
 ```
-docker cp postprocess:/data/cases .
+docker cp nome-do-container:/data/cases .
+```
+
+Certifique-se de que o python está instalado. Em seguida, mude para o diretório src crie um ambiente virtual:
+
+```
+python -m venv .venv
+``` 
+
+Para instalar todos as bibliotecas necessárias, use o arquivo requirements.txt. Entre no seu ambiente virtual, e depois:
+```
+.\.venv\Scripts\Activate.ps1
+```
+
+```
+pip install -r requirements.txt
+```
+
+Para atualizar os requirement, entrar no ambiente virtual, e depois
+
+```
+pip freeze > requirements.txt
 ```
