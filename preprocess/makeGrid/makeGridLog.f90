@@ -1,52 +1,5 @@
 ﻿program MakeGridLog
 implicit none
-!-------------------------------------------------------------------------!
-! Ana Paula Kelm Soares
-! 26/abr/2012
-! LEMMA/UFPR
-! PPGMNE
-!-------------------------------------------------------------------------!
-!
-!  Programa para criar o arquivo de grade com formato padrao. 
-!  O dominio deve ser necessariamente retangular e 2D.
-!  O espaçamento de grade pode ser variável. 
-!  O nome do arquivo de grade deve seguir o seguinte padrao:
-!   - nomegrad.grd
-! sendo que o nome dado a grade, ou "nomegrad", deve ter 8 caracteres. 
-! 
-!  O formato do arquivo de grade segue o seguinte padrao:
-!  - 1ª linha: 
-!              deve conter os valores in e jn, que são os indices dos 
-!              ultimos pontos de grade, respectivamente nas direcoes 
-!              x e y. O primeiro ponto de grade é convencionado como 
-!              tendo indice 0.
-!  - Linhas seguintes: 
-!              devem conter o valor em metros do ponto x, e,  
-!              subsequentemente, dos pontos y, tambem em metros. 
-! 
-!
-!  EXEMPLO:
-! 
-! in  jn 
-! x(1)
-! x(2)
-! .
-! .
-! .
-! x(in-1)
-! x(in)
-! y(1)
-! y(2)
-! .
-! .
-! .
-! y(jn-1)
-! y(jn)
-!
-!-------------------------------------------------------------------------!
-!  MakeGrid_v2.1: grade log em y e uniforme em x
-!-------------------------------------------------------------------------!
-!
 
 real, allocatable, dimension(:) :: x, y
 integer :: i, j, in, jn, status
@@ -73,24 +26,17 @@ yn = 1.0                !m
 dx = 0.1                !m   
 dyb = 0.00025           !m 
 dyt = 0.1               !m
-!
-!
+
 !Calcula in e jn, onde i=1,...,in e j=1,...,jn
-! i ==> coordenada x
-! j ==> coordenada y
-!
  in = int((xn-x0)/dx)
  jn = int((yn-y0)/dyb)
-!
-! Aloca arrays
+
 allocate(x(1:in), y(1:jn))
-!
-!
+
 ! Cria a grade
 do i = 1,in
    x(i) = (i-1)*dx + x0
 enddo
-!
 
 h = yn-y0
 y(1) = y0
@@ -105,8 +51,7 @@ do j = 2,int((yn-y0)/dyb)
    if (y(j)>=yn) exit
 enddo
 jn = j
-!
-!
+
 ! Escreve arquivo de grade
 write(7,*) in, jn
 !
@@ -117,7 +62,6 @@ enddo
 do j = 1,jn
   write(7,*) y(j)
 enddo
-
 
 close(7)
 end program MakeGridLog
