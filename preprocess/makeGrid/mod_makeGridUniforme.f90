@@ -1,6 +1,9 @@
-﻿program MakeGridUniforme
+﻿module MakeGridUniforme
+  implicit none
+  contains
 
-implicit none
+subroutine makeGridUniforme() 
+
 real, allocatable, dimension(:) :: x, y
 integer :: i, j, in, jn, status
 real :: x0, y0, xn, yn, dx, dy
@@ -55,4 +58,6 @@ do j = 1,jn
 enddo
 
 close(7)
-end program MakeGridUniforme
+end subroutine makeGridUniforme
+
+end module MakeGridUniforme

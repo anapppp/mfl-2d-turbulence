@@ -1,6 +1,9 @@
-﻿program MakeGridMista
+﻿module MakeGridMista
+   implicit none
+   contains
 
-implicit none
+subroutine makeGridMista()
+
 real, allocatable, dimension(:) :: x, y
 integer :: i, j, in, jn, jin, status
 real :: x0, y0, xn, yn, ynlog, ynlin1, dx, dy, dyb, dytlog, dytlin1, dytlin2, a, b, h
@@ -97,4 +100,6 @@ do j = 1,jn
 enddo
 
 close(7)
-end program MakeGridMista
+end subroutine makeGridMista
+
+end module MakeGridMista
