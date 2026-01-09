@@ -67,11 +67,11 @@ open(unit=7,  file = trim(inputs_dir)//trim(gridName)//".grd", status="unknown")
 
 ! Delimitacao do dominio e do espacamento de grade
 x0 = 0.0                !m
-xn = 20.0               !m      
+xn = 10.0               !m      
 y0 = 0.0                !m   
 yn = 1.0                !m   
-dx = 0.5                !m   
-dyb = 0.001             !m
+dx = 0.1                !m   
+dyb = 0.00025           !m 
 dyt = 0.1               !m
 !
 !

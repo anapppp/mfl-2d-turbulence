@@ -50,9 +50,11 @@
 !
 implicit none
 real, allocatable, dimension(:) :: x, y
-integer :: i, j, in, jn, jin
+integer :: i, j, in, jn, jin, status
 real :: x0, y0, xn, yn, ynlog, ynlin1, dx, dy, dyb, dytlog, dytlin1, dytlin2, a, b, h
-character*8 :: nomegrad
+character*8 :: gridName
+character*50 :: inputs_dir
+
 !
 !
 !-------------------------------------------------------------------------!
@@ -67,25 +69,30 @@ character*8 :: nomegrad
 !-------------------------------------------------------------------------!
 !
 !
-! Nome da Grade
-nomegrad = "grdPlaca"
-!
-!
-open(unit=7, file="./"//nomegrad//".grd", status="unknown")
-!
-!
+
+call get_environment_variable("GRID_NAME", gridName, status=status)
+if (status /= 0) stop "ERROR: GRID_NAME not defined"
+
+call get_environment_variable("INPUTS_DIR", inputs_dir, status=status)
+if (status /= 0) stop "ERROR: INPUTS_DIR not defined"
+
+
+open(unit=7,  file = trim(inputs_dir)//trim(gridName)//".grd", status="unknown")
+
 ! Delimitacao do dominio e do espacamento de grade
 x0 = 0.0                 !m
-xn = 7.0                 !m      
+xn = 10.0                 !m      
 y0 = 0.0                 !m   
 ynlog = 0.06             !m
 ynlin1 = 0.1             !m  
 yn = 0.5                 !m 
-dx = 0.1                 !m   
-dyb = 0.00025            !m
+dx = 0.2                 !m   
+dyb = 0.0003             !m
 dytlog = 0.0008          !m
 dytlin1 = 0.001          !m
 dytlin2 = 0.2            !m
+
+
 !
 !
 !Calcula in e jn, onde i=1,...,in e j=1,...,jn

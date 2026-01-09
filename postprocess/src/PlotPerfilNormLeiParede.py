@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-import matplotlib
-import matplotlib.pyplot as plt
-from numpy import *
 import sys
+import numpy as np
+import matplotlib.pyplot as plt
+
 from class_LerArquivos import *
 from class_Label import *
+
 """
 -------------------------------------------------------------------------
  Ana Paula Kelm Soares
@@ -12,66 +13,86 @@ from class_Label import *
  LEMMA/UFPR
  PPGMNE
 -------------------------------------------------------------------------
- Script para plotar o perfil Normalizado pela Lei da parede. 
- Para rodar o script na linha de comando, mude para o diretorio 
- principal e digite:
+ Script para plotar o perfil normalizado pela Lei da Parede
+ Uso:
 
- python ./PosProcessamento/PloPerfilNormalizado.py nomedoarquivo mi rho
-
- O arquivo "nomedoarquivo" deve estar na pasta ./Resultados
+ python ./PosProcessamento/PloPerfilNormalizado.py nomesim mi rho passotempo
 -------------------------------------------------------------------------
 """
 
-
-# Lendo arquivo
+# -----------------------------
+# Leitura dos argumentos
+# -----------------------------
 nomesim = sys.argv[1]
-xplot = float(sys.argv[2])
-passotempo = sys.argv[3]
-
-filename = './cases/' + nomesim + '/results/' + nomesim + '.u.' + passotempo
-nomesim, nomelabel, nomevar, passotempo = Labels(filename)
-
-X, Y, Z = LerArquivoPadrao(filename)
-
-mi = 1.817E-05
+passotempo = sys.argv[2]
+mi = 1.817E-05 
 rho = 1.188
 
-y = Y[:, -2]
-u = Z[:, 25]
+# -----------------------------
+# Leitura do arquivo
+# -----------------------------
+filename = f'./cases/{nomesim}/results/{nomesim}.u.{passotempo}'
 
+nomesim, nomelabel, nomevar, passotempo = Labels(filename)
+X, Y, Z = LerArquivoPadrao(filename)
 
-# Calculando tensao na superficie - tauzero = du/dy em y=0
-dyu = y[2]-y[1]
-dyd = y[1]-y[0]
-tauzero = dyd*dyd*u[2] + (dyu*dyu-dyd*dyd)*u[1] - dyu*dyu*u[0]
-tauzero = tauzero/dyu/dyd/(dyu+dyd)
-tauzero = mi*abs(tauzero)
+# -----------------------------
+# Extração do perfil
+# -----------------------------
+y = Y[:, -2]        # direção normal à parede
+u = Z[:, 25]        # perfil em x fixo
 
-# Calculando variaveis adimensionais
-nu = mi/rho
-uestrela = sqrt(tauzero/rho)
-unorm = [i/uestrela for i in u]
-ymais = [i*uestrela/nu for i in y]
+# -----------------------------
+# Tensão de cisalhamento na parede
+# du/dy em y = 0 (malha não uniforme)
+# -----------------------------
+dyu = y[2] - y[1]
+dyd = y[1] - y[0]
 
-print('tau_0: ', tauzero)
-print('u*: ', uestrela)
-print('escala viscosa (nu/u*):', nu/uestrela)
+tauzero = (
+    dyd*dyd*u[2]
+    + (dyu*dyu - dyd*dyd)*u[1]
+    - dyu*dyu*u[0]
+) / (dyu * dyd * (dyu + dyd))
 
-# Plotando
-fig = plt.figure()
+tauzero = mi * abs(tauzero)
 
+# -----------------------------
+# Variáveis adimensionais
+# -----------------------------
+
+nu = mi / rho
+uestrela = np.sqrt(tauzero / rho)
+
+unorm = u / uestrela
+ymais = y * uestrela / nu
+
+# -----------------------------
+# Saída numérica
+# -----------------------------
+print('tau_0:', tauzero)
+print('u*:', uestrela)
+print('escala viscosa (nu/u*):', nu / uestrela)
+
+# -----------------------------
+# Plot
+# -----------------------------
+plt.figure()
 plt.xscale('log')
 
 plt.plot(ymais, unorm, label='Simulado')
-ymaisteorico = range(0, 15)
-plt.plot(ymaisteorico, ymaisteorico, color='k', label='U/u*=y+')
-ymaisteorico = range(7, 10000)
-plt.plot(ymaisteorico, [2.5*log(i)+5 for i in ymaisteorico],
-         color='k', label='U/u*=2,5ln(y+)+5')
+
+y_teor = np.linspace(1, 15, 200)
+plt.plot(y_teor, y_teor, 'k', label='U/u* = y+')
+
+y_teor = np.linspace(7, 1e4, 500)
+plt.plot(y_teor, 2.5*np.log(y_teor) + 5, 'k--',
+         label='U/u* = 2.5 ln(y+) + 5')
 
 plt.title(nomesim)
-plt.ylabel('U/u*')
 plt.xlabel('y+')
+plt.ylabel('U/u*')
 plt.legend()
+plt.grid(True, which='both', linestyle='--', alpha=0.5)
 
 plt.show()
