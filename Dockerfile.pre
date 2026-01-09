@@ -8,7 +8,7 @@ WORKDIR /preprocess
 COPY preprocess .
 COPY cases ./cases
 
-
 RUN gfortran -O3 -funroll-loops -fopenmp \
+    makeGrid/modules/*.f90 \
     makeGrid/main.f90 \
     -o makeGrid.exe
