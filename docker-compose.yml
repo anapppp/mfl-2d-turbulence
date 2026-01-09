@@ -1,7 +1,6 @@
 volumes:
   data:
 
-
 services:
   preprocess:
     build:
@@ -17,16 +16,24 @@ services:
       MAKE_GRID: ${MAKE_GRID}
       GRID_NAME: ${GRID_NAME}
       GRID_TYPE: ${GRID_TYPE}
+      GRID_X0: ${GRID_X0}
+      GRID_XN: ${GRID_XN}
+      DX: ${DX}
+      GRID_Y0: ${GRID_Y0}
+      GRID_YN: ${GRID_YN}
+      DY: ${DY}
+      DY0: ${DY0}
+      DYN: ${DYN}
+      Y_LOG_END: ${Y_LOG_END}
+      Y_LIN1_END: ${Y_LIN1_END}
+      DY_LOG_END: ${DY_LOG_END}
+      DY_LIN1_END: ${DY_LIN1_END}
     volumes:
       - data:/data
     command: >
-      sh -c "  rm -rf ${LOGS_DIR} ${RESULTS_DIR} && mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} &&  cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR} &&  if [ '${MAKE_GRID}' = 'true' ]; then
-        if [ '${GRID_TYPE}' = 'log' ]; then
-          ./makeGridLog.exe;
-        fi
-        if [ '${GRID_TYPE}' = 'mixed' ]; then
-          ./makeGridMista.exe;
-        fi 
+      sh -c "  rm -rf ${LOGS_DIR} ${RESULTS_DIR} && mkdir -p ${INPUTS_DIR} ${RESULTS_DIR} ${LOGS_DIR} &&  cp -r ./cases/${CASE}/inputs/* ${INPUTS_DIR} &&  
+      if [ '${MAKE_GRID}' = 'true' ]; then
+          ./makeGrid.exe;
       fi"
 
   mfl2d:

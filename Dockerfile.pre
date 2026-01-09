@@ -10,15 +10,5 @@ COPY cases ./cases
 
 
 RUN gfortran -O3 -funroll-loops -fopenmp \
-    makeGrid/makeGridLog.f90 \
-    -o makeGridLog.exe
-
-RUN gfortran -O3 -funroll-loops -fopenmp \
-makeGrid/makeGridMista.f90 \
--o makeGridMista.exe
-
-# RUN gfortran -O3 -funroll-loops -fopenmp \
-#     makeInitialCondition/pressao.f90 \
-#     -o makeInitialConditionPressao.exe
-
-# CMD ./makeGrid_uniforme.exe simPlaca && ./makeInitialConditionPressao.exe
+    makeGrid/main.f90 \
+    -o makeGrid.exe
