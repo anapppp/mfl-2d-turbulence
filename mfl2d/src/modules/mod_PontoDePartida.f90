@@ -105,18 +105,18 @@ yn = vetPtoPartida(2)
           ync = vety(1)
           xnc = (ync-yn)/(vety(jj)-yn)*(vetx(ii)-xn) + xn
           iref = PontoDeReferencia1D(vetx, vdx, xnc)
-          vpp = intCubicLagr1D(f(iref-2,1),f(iref-1,1),&
+          vpp = intCubicSpline1D(f(iref-2,1),f(iref-1,1),&
                        f(iref,1),f(iref+1,1),vetx(iref-2),vdx(iref-2),vdx(iref-1),vdx(iref),xnc)
         else 
           if (ync>vety(sizey)) then 
             ync = vety(sizey)
             xnc = (ync-yn)/(vety(jj)-yn)*(vetx(ii)-xn) + xn
             iref = PontoDeReferencia1D(vetx, vdx, xnc)
-            vpp = intCubicLagr1D(f(iref-2,sizey),f(iref-1,sizey),&
+            vpp = intCubicSpline1D(f(iref-2,sizey),f(iref-1,sizey),&
                        f(iref,sizey),f(iref+1,sizey),vetx(iref-2),vdx(iref-2),vdx(iref-1),vdx(iref),xnc)
           else 
             jref = PontoDeReferencia1D(vety, vdy, ync)
-            vpp = intCubicLagr1D(f(1,jref-2),f(1,jref-1),f(1,jref),&
+            vpp = intCubicSpline1D(f(1,jref-2),f(1,jref-1),f(1,jref),&
                        f(1,jref+1),vety(jref-2),vdy(jref-2),vdy(jref-1),vdy(jref),ync)
           endif
         endif 
@@ -129,17 +129,17 @@ yn = vetPtoPartida(2)
             ync = vety(1)
             xnc = (ync-yn)/(vety(jj)-yn)*(vetx(ii)-xn) + xn
             iref = PontoDeReferencia1D(vetx, vdx, xnc)
-            vpp = intCubicLagr1D(f(iref-2,1),f(iref-1,1),&
+            vpp = intCubicSpline1D(f(iref-2,1),f(iref-1,1),&
                       f(iref,1),f(iref+1,1),vetx(iref-2),vdx(iref-2),vdx(iref-1),vdx(iref),xnc)
           else 
             if (ync>vety(sizey)) then 
               ync = vety(sizey)
               xnc = (ync-yn)/(vety(jj)-yn)*(vetx(ii)-xn) + xn
-              vpp = intCubicLagr1D(f(iref-2,sizey),f(iref-1,sizey),&
+              vpp = intCubicSpline1D(f(iref-2,sizey),f(iref-1,sizey),&
                             f(iref,sizey),f(iref+1,sizey),vetx(iref-2),vdx(iref-2),vdx(iref-1),vdx(iref),xnc)
             else 
               jref = PontoDeReferencia1D(vety, vdy, ync)
-              vpp = intCubicLagr1D(f(sizex,jref-2),f(sizex,jref-1),&
+              vpp = intCubicSpline1D(f(sizex,jref-2),f(sizex,jref-1),&
                             f(sizex,jref),f(sizex,jref+1),vety(jref-2),vdy(jref-2),vdy(jref-1),vdy(jref),ync)
             endif
          endif 
@@ -149,14 +149,14 @@ yn = vetPtoPartida(2)
             ync = vety(1)
             xnc = (ync-yn)/(vety(jj)-yn)*(vetx(ii)-xn) + xn
             iref = PontoDeReferencia1D(vetx, vdx, xnc)
-            vpp = intCubicLagr1D(f(iref-2,1),f(iref-1,1),&
+            vpp = intCubicSpline1D(f(iref-2,1),f(iref-1,1),&
                        f(iref,1),f(iref+1,1),vetx(iref-2),vdx(iref-2),vdx(iref-1),vdx(iref),xnc)
 
           else !regiao D
             ync = vety(sizey)
             xnc = (ync-yn)/(vety(jj)-yn)*(vetx(ii)-xn) + xn
             iref = PontoDeReferencia1D(vetx, vdx, xnc)
-            vpp = intCubicLagr1D(f(iref-2,sizey),f(iref-1,sizey),& 
+            vpp = intCubicSpline1D(f(iref-2,sizey),f(iref-1,sizey),& 
                        f(iref,sizey),f(iref+1,sizey),vetx(iref-2),vdx(iref-2),vdx(iref-1),vdx(iref),xnc)
             
           endif
@@ -168,7 +168,9 @@ yn = vetPtoPartida(2)
     iref = PontoDeReferencia1D(vetx, vdx, xn)
     jref = PontoDeReferencia1D(vety, vdy, yn)
 
-    vpp = intCubicLagr2D(f, vetx, vety, vdx, vdy, iref, jref, xn, yn)
+    ! vpp = intCubicLagr2D(f, vetx, vety, vdx, vdy, iref, jref, xn, yn)
+    vpp = intCubicSpline2D(f,vetx,vety,vdx,vdy, iref, jref, xn, yn)
+
     
     endif
 
