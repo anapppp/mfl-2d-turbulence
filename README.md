@@ -117,6 +117,7 @@ docker builder prune
 ```
 
 ### Remover Containers parados
+
 ```
 docker container prune
 ```
@@ -127,6 +128,12 @@ Idem imagens e volumes
 ```
 docker exec -it postprocess /bin/bash
 ```
+
+### Inicia novo container e volume sem sobreescrever antigos
+```
+docker compose -p simPlaca up -d nomedoservice --build
+```
+o `build` refaz a imagem. Sem ele, o container é feito usando a imagem antiga.
 
 ## Pós-processamento
 

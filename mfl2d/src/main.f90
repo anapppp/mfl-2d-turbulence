@@ -4,6 +4,7 @@ use PontoDePartida
 use DiferencasFinitas
 use RotinasInOut
 use CondicoesContorno
+use criteriosdeconvergencia
 
 implicit none
  
@@ -258,9 +259,12 @@ write(*,*) 'Simulacao: ', nomecaso
 write(*,*) 'Grade: ', nomegrade
 write(*,*) 'INICIO DA PREVISAO'
 
+
 contpt = 0
- 
+
 do n = 1, npt
+  
+  call checkcriteriosdeconvergencia(mi, dt, dz, kn)
 
  contpt = contpt + 1
 

@@ -15,6 +15,7 @@ RUN gfortran -O3 -march=native -funroll-loops -fopenmp \
     src/modules/mod_PontoDePartida.f90 \
     src/modules/mod_DiferencasFinitas.f90 \
     src/modules/mod_CondicoesContorno.f90 \
+    src/modules/mod_CriteriosDeConvergencia.f90 \
     src/main.f90 \
     -lnetcdff -lnetcdf \
     -o mfl2d
